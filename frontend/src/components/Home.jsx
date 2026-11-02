@@ -3,6 +3,9 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import heroImg from '../../assets/heroImg.jpg';
 import './Home.css';
+import ProblemStatements from './ProblemStatements';
+import Timeline from './Timeline';
+import Judges from './Judges';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
@@ -48,6 +51,9 @@ export default function Home() {
         <span className="nav-logo">AI <span className="accent">VERSE 3.0</span></span>
         <ul className="nav-links">
           <li><a href="#about">About</a></li>
+          <li><a href="#problem-statements">Problem Statements</a></li>
+          <li><a href="#timeline">Time Line</a></li>
+          <li><a href="#judges">Judges</a></li>
           <li><a href="#team">Team Augment</a></li>
           <li><a href="#faq">FAQ</a></li>
           <li><a href="#contact">Contact</a></li>
@@ -90,6 +96,10 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
+
+      <ProblemStatements />
+      <Timeline />
+      <Judges />
 
       <section className="team-section section" id="team">
         <motion.h2 variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>Team Augment</motion.h2>
