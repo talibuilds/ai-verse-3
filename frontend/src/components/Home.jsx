@@ -37,6 +37,7 @@ const suppliedAboutImages = Object.values(import.meta.glob('../../assets/about*.
 
 export default function Home() {
   const [aboutImageIndex, setAboutImageIndex] = useState(0);
+  const [navOpen, setNavOpen] = useState(false);
   const aboutImages = suppliedAboutImages.length ? suppliedAboutImages : [heroImg];
 
   useEffect(() => {
@@ -49,15 +50,23 @@ export default function Home() {
     <div className="home">
       <nav className="navbar">
         <span className="nav-logo">AI <span className="accent">VERSE 3.0</span></span>
-        <ul className="nav-links">
-          <li><a href="#about">About</a></li>
-          <li><a href="#problem-statements">Problem Statements</a></li>
-          <li><a href="#timeline">Time Line</a></li>
-          <li><a href="#judges">Judges</a></li>
-          <li><a href="#team">Team Augment</a></li>
-          <li><a href="#faq">FAQ</a></li>
-          <li><a href="#contact">Contact</a></li>
-          <li><Link to="/register" className="nav-cta">Register</Link></li>
+        <button
+          className="nav-toggle"
+          type="button"
+          aria-label={navOpen ? 'Close navigation menu' : 'Open navigation menu'}
+          aria-expanded={navOpen}
+          aria-controls="site-navigation"
+          onClick={() => setNavOpen((open) => !open)}
+        >
+          <span /><span /><span />
+        </button>
+        <ul className={`nav-links${navOpen ? ' is-open' : ''}`} id="site-navigation">
+          <li><a href="#problem-statements" onClick={() => setNavOpen(false)}>Problem Statements</a></li>
+          <li><a href="#timeline" onClick={() => setNavOpen(false)}>Timeline</a></li>
+          <li><a href="#judges" onClick={() => setNavOpen(false)}>Judges</a></li>
+          <li><a href="#faq" onClick={() => setNavOpen(false)}>FAQ</a></li>
+          <li><a href="#contact" onClick={() => setNavOpen(false)}>Contact</a></li>
+          <li><Link to="/register" className="nav-cta" onClick={() => setNavOpen(false)}>Register</Link></li>
         </ul>
       </nav>
 
