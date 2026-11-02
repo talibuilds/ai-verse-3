@@ -7,6 +7,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/register" element={<div />} />
         {/* Future pages can be added here */}
       </Routes>
     </Router>
