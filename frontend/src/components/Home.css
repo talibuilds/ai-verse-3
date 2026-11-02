@@ -1,0 +1,424 @@
+/* ===================== GLOBAL ===================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #0a0a12;
+  color: #e0e0ff;
+  scroll-behavior: smooth;
+}
+
+.home {
+  min-height: 100vh;
+}
+
+.accent {
+  color: #7c5cfc;
+}
+
+.section {
+  padding: 5rem 8vw;
+}
+
+.section h2 {
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.section > p {
+  text-align: center;
+  color: #a0a0cc;
+  max-width: 650px;
+  margin: 0 auto 3rem;
+  font-size: 1.1rem;
+  line-height: 1.7;
+}
+
+/* ===================== NAVBAR ===================== */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.1rem 8vw;
+  background: rgba(10, 10, 18, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(124, 92, 252, 0.15);
+}
+
+.nav-logo {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 1px;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #a0a0cc;
+  font-size: 0.95rem;
+  transition: color 0.2s;
+}
+
+.nav-links a:hover {
+  color: #fff;
+}
+
+.nav-cta {
+  background: #7c5cfc;
+  color: #fff !important;
+  padding: 0.5rem 1.3rem;
+  border-radius: 50px;
+  font-weight: 600;
+  transition: background 0.2s, transform 0.2s !important;
+}
+
+.nav-cta:hover {
+  background: #6344e0 !important;
+  transform: translateY(-1px);
+}
+
+/* ===================== HERO ===================== */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 3rem;
+  padding: 8rem 8vw 4rem;
+  background: radial-gradient(ellipse at 70% 40%, rgba(124, 92, 252, 0.18) 0%, transparent 70%),
+              radial-gradient(ellipse at 20% 80%, rgba(56, 189, 248, 0.1) 0%, transparent 60%),
+              #0a0a12;
+}
+
+.hero-content {
+  flex: 1;
+  max-width: 600px;
+}
+
+.edition-tag {
+  display: inline-block;
+  background: rgba(124, 92, 252, 0.15);
+  border: 1px solid rgba(124, 92, 252, 0.4);
+  color: #a78bfa;
+  padding: 0.4rem 1rem;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  margin-bottom: 1.2rem;
+  letter-spacing: 0.5px;
+}
+
+.hero h1 {
+  font-size: clamp(3rem, 6vw, 5rem);
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.05;
+  margin-bottom: 1.2rem;
+}
+
+.hero-sub {
+  font-size: 1.15rem;
+  color: #a0a0cc;
+  line-height: 1.7;
+  margin-bottom: 2rem;
+  max-width: 500px;
+}
+
+.hero-cta {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 3rem;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #7c5cfc, #5b8dee);
+  color: #fff;
+  padding: 0.8rem 2rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 24px rgba(124, 92, 252, 0.4);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(124, 92, 252, 0.6);
+}
+
+.btn-outline {
+  border: 2px solid rgba(124, 92, 252, 0.5);
+  color: #a78bfa;
+  padding: 0.8rem 2rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: background 0.2s, color 0.2s;
+}
+
+.btn-outline:hover {
+  background: rgba(124, 92, 252, 0.12);
+  color: #fff;
+}
+
+/* Stats bar */
+.hero-stats {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.stat span {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #7c5cfc;
+  display: block;
+}
+
+.stat p {
+  font-size: 0.8rem;
+  color: #7a7aaa;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-divider {
+  width: 1px;
+  height: 40px;
+  background: rgba(255,255,255,0.1);
+}
+
+/* Hero image */
+.hero-image {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  max-width: 480px;
+}
+
+.hero-image img {
+  width: 100%;
+  max-width: 420px;
+  border-radius: 20px;
+  object-fit: contain;
+  position: relative;
+  z-index: 1;
+  filter: drop-shadow(0 0 40px rgba(124, 92, 252, 0.4));
+}
+
+.hero-glow {
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, rgba(124,92,252,0.35) 0%, transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  z-index: 0;
+  animation: pulse 4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+  50% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
+}
+
+/* ===================== ABOUT ===================== */
+.about {
+  background: linear-gradient(180deg, #0a0a12 0%, #0d0d1a 100%);
+}
+
+.cards-row {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 3rem;
+}
+
+.card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(124, 92, 252, 0.2);
+  border-radius: 16px;
+  padding: 2rem;
+  flex: 1;
+  min-width: 220px;
+  max-width: 300px;
+  text-align: center;
+  transition: transform 0.25s, border-color 0.25s;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(124, 92, 252, 0.6);
+}
+
+.card-icon {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.card h3 {
+  font-size: 1.2rem;
+  color: #fff;
+  margin-bottom: 0.6rem;
+}
+
+.card p {
+  color: #8888bb;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* ===================== TRACKS ===================== */
+.tracks {
+  background: #0d0d1a;
+}
+
+.tracks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin-top: 3rem;
+}
+
+.track-card {
+  background: linear-gradient(135deg, rgba(124,92,252,0.08), rgba(91,141,238,0.05));
+  border: 1px solid rgba(124,92,252,0.2);
+  border-radius: 14px;
+  padding: 1.8rem;
+  text-align: center;
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.track-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 32px rgba(124,92,252,0.2);
+}
+
+.track-icon {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 0.8rem;
+}
+
+.track-card h3 {
+  color: #fff;
+  margin-bottom: 0.4rem;
+}
+
+.track-card p {
+  color: #8888bb;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* ===================== SPONSORS ===================== */
+.sponsors {
+  background: #0a0a12;
+}
+
+.sponsor-logos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.sponsor-placeholder {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 1.5rem 2.5rem;
+  color: #6666aa;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.sponsor-placeholder:hover {
+  border-color: rgba(124,92,252,0.5);
+  color: #a78bfa;
+}
+
+/* ===================== FAQ ===================== */
+.faq {
+  background: #0d0d1a;
+}
+
+.faq-item {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 1.5rem 2rem;
+  margin-bottom: 1rem;
+  max-width: 780px;
+  margin-left: auto;
+  margin-right: auto;
+  transition: border-color 0.2s;
+}
+
+.faq-item:hover {
+  border-color: rgba(124,92,252,0.4);
+}
+
+.faq-item h4 {
+  color: #fff;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.faq-item p {
+  color: #8888bb;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* ===================== FOOTER ===================== */
+.footer {
+  background: #060609;
+  text-align: center;
+  padding: 2.5rem 8vw;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  color: #5555aa;
+  font-size: 0.9rem;
+  line-height: 2;
+}
+
+/* ===================== RESPONSIVE ===================== */
+@media (max-width: 768px) {
+  .hero {
+    flex-direction: column;
+    text-align: center;
+    padding-top: 6rem;
+  }
+  .hero-sub { max-width: 100%; }
+  .hero-cta { justify-content: center; }
+  .hero-stats { justify-content: center; }
+  .hero-image { max-width: 300px; }
+  .nav-links { display: none; }
+}
