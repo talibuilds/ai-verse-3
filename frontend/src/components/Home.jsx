@@ -8,6 +8,7 @@ import Timeline from './Timeline';
 import Judges from './Judges';
 import ParticleCanvas from './ParticleCanvas';
 import Countdown from './Countdown';
+import IntroScreen from './IntroScreen';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 44 },
@@ -49,7 +50,13 @@ export default function Home() {
   const [aboutImageIndex, setAboutImageIndex] = useState(0);
   const [navOpen, setNavOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState(null);
+  const [showIntro, setShowIntro] = useState(() => !sessionStorage.getItem('av3_intro_seen'));
   const aboutImages = suppliedAboutImages.length ? suppliedAboutImages : [heroImg];
+
+  const handleIntroDone = () => {
+    sessionStorage.setItem('av3_intro_seen', '1');
+    setShowIntro(false);
+  };
 
   // Cursor spotlight
   const spotX = useMotionValue(-300);
@@ -71,6 +78,7 @@ export default function Home() {
 
   return (
     <div className="home">
+      {showIntro && <IntroScreen onDone={handleIntroDone} />}
       <ParticleCanvas />
 
       {/* CURSOR SPOTLIGHT */}
