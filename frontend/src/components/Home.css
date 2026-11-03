@@ -545,20 +545,20 @@
   overflow: hidden;
 }
 .about-layout {
-  display: grid;
-  grid-template-columns: minmax(0,1fr) minmax(0,1fr);
-  align-items: center;
-  gap: clamp(3rem,6vw,7rem);
-  max-width: 1400px;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  max-width: 1100px;
   margin: 3rem auto 0;
 }
-.about-image { position: relative; }
+.about-image { position: relative; width: 100%; }
 .about-image img {
   width: 100%;
-  aspect-ratio: 4/5;
+  aspect-ratio: 16 / 9;
   object-fit: cover;
+  object-position: center;
   display: block;
-  filter: brightness(0.8) saturate(0.85);
+  filter: brightness(0.85) saturate(0.9);
 }
 
 /* Dot indicators */
@@ -601,6 +601,12 @@
   border-bottom: 2px solid var(--gold-dim);
   z-index: 0; pointer-events: none;
 }
+.about-copy {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2rem 3rem;
+  align-items: start;
+}
 .about-copy h3 {
   font-family: var(--font-display);
   font-size: clamp(2.5rem,4vw,4rem);
@@ -609,7 +615,8 @@
   text-transform: uppercase;
   color: var(--pure-white);
   line-height: 1;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0;
+  grid-column: 1 / -1;
 }
 .about-copy h3 em {
   font-style: normal;
@@ -620,7 +627,7 @@
   color: var(--silver-blue);
   font-size: 0.97rem;
   line-height: 1.9;
-  margin-bottom: 1.4rem;
+  margin-bottom: 0;
   text-align: left;
 }
 
@@ -759,8 +766,8 @@
   .hero-sub { margin-left: auto; margin-right: auto; border-left: none; padding-left: 0; border-top: 1px solid var(--gold-dim); padding-top: 1rem; }
   .hero-cta { justify-content: center; }
   .hero-orbit-1, .hero-orbit-2, .hero-orbit-3 { display: none; }
-  .about-layout { grid-template-columns: 1fr; }
-  .about-image { max-width: 480px; margin: 0 auto; }
+  .about-layout { max-width: 100%; }
+  .about-image { max-width: 100%; margin: 0; }
   .footer { grid-template-columns: 1fr; gap: 2rem; }
   .stats-bar { flex-wrap: wrap; }
   .stats-bar-item { flex: 1 1 33%; border-bottom: 1px solid var(--border-dim); }
@@ -798,6 +805,7 @@
   .section h2 { font-size: clamp(2.5rem,10vw,4rem); }
   .nav-logo { font-size: 1.4rem; }
   .footer { padding: 2.5rem 5vw; }
+  .about-copy { grid-template-columns: 1fr; gap: 1rem; }
   .about-copy h3 { font-size: clamp(2rem,8vw,3rem); }
   .faq-q { padding: 1.2rem 1.25rem; }
   .faq-a { padding: 0 1.25rem; }
