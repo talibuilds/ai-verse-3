@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 import './IntroScreen.css';
 
 const PHASES = {
-  BOOT:    'boot',    // 0–600ms   — black, scanline flicker
-  LOGO:    'logo',    // 600–2200  — AI VERSE assembles
-  GLITCH:  'glitch',  // 2200–2900 — glitch burst
-  SPLIT:   'split',   // 2900–3700 — panels split open
-  DONE:    'done',    // 3700+     — unmount
+  BOOT:    'boot',    // 0–900ms   — black, scanline flicker
+  LOGO:    'logo',    // 900–3800  — AI VERSE assembles
+  GLITCH:  'glitch',  // 3800–4900 — glitch burst
+  SPLIT:   'split',   // 4900–6200 — panels split open
+  DONE:    'done',    // 6200+     — unmount
 };
 
 export default function IntroScreen({ onDone }) {
@@ -14,17 +14,17 @@ export default function IntroScreen({ onDone }) {
   const [counter, setCounter] = useState(0);
 
   useEffect(() => {
-    const t1 = setTimeout(() => setPhase(PHASES.LOGO),   600);
-    const t2 = setTimeout(() => setPhase(PHASES.GLITCH), 2200);
-    const t3 = setTimeout(() => setPhase(PHASES.SPLIT),  2900);
-    const t4 = setTimeout(() => { setPhase(PHASES.DONE); onDone(); }, 3750);
+    const t1 = setTimeout(() => setPhase(PHASES.LOGO),   900);
+    const t2 = setTimeout(() => setPhase(PHASES.GLITCH), 3800);
+    const t3 = setTimeout(() => setPhase(PHASES.SPLIT),  4900);
+    const t4 = setTimeout(() => { setPhase(PHASES.DONE); onDone(); }, 6200);
     return () => [t1,t2,t3,t4].forEach(clearTimeout);
   }, [onDone]);
 
   // Fake boot counter
   useEffect(() => {
     if (phase !== PHASES.BOOT && phase !== PHASES.LOGO) return;
-    const t = setInterval(() => setCounter((c) => Math.min(c + Math.floor(Math.random() * 18 + 4), 100)), 40);
+    const t = setInterval(() => setCounter((c) => Math.min(c + Math.floor(Math.random() * 6 + 1), 100)), 28);
     return () => clearInterval(t);
   }, [phase]);
 
