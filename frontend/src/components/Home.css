@@ -560,6 +560,31 @@
   display: block;
   filter: brightness(0.8) saturate(0.85);
 }
+
+/* Dot indicators */
+.about-image-dots {
+  position: absolute;
+  bottom: 1.2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.5rem;
+  z-index: 3;
+}
+.about-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: rgba(212,175,99,0.3);
+  border: 1px solid rgba(212,175,99,0.5);
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s, transform 0.2s;
+}
+.about-dot--active {
+  background: var(--gold);
+  transform: scale(1.4);
+  box-shadow: 0 0 8px var(--gold-glow);
+}
 .about-image::before {
   content: '';
   position: absolute;

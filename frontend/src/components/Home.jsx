@@ -40,7 +40,7 @@ const TICKER_ITEMS = [
   'Team Size 3–5', 'Entry ₹350',
 ];
 
-const suppliedAboutImages = Object.values(import.meta.glob('../../assets/about*.{jpg,jpeg,png,webp}', {
+const suppliedAboutImages = Object.values(import.meta.glob('../../assets/*.{jpg,jpeg,png,webp}', {
   eager: true, query: '?url', import: 'default',
 })).sort();
 
@@ -51,7 +51,7 @@ export default function Home() {
   const [navOpen, setNavOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState(null);
   const [showIntro, setShowIntro] = useState(() => !sessionStorage.getItem('av3_intro_seen'));
-  const aboutImages = suppliedAboutImages.length ? suppliedAboutImages : [heroImg];
+  const aboutImages = suppliedAboutImages.filter(src => !src.includes('heroImg')) || [heroImg];
 
   const handleIntroDone = () => {
     sessionStorage.setItem('av3_intro_seen', '1');
@@ -224,11 +224,28 @@ export default function Home() {
         <div className="gold-sep"><span /></div>
         <div className="about-layout">
           <motion.div className="about-image" variants={fadeUp} custom={1} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-            <img key={aboutImageIndex} src={aboutImages[aboutImageIndex]} alt="Augment AI community" />
+            <motion.img
+              key={aboutImageIndex}
+              src={aboutImages[aboutImageIndex]}
+              alt={`Augment AI community ${aboutImageIndex + 1}`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, ease: 'easeInOut' }}
+            />
+            <div className="about-image-dots">
+              {aboutImages.map((_, i) => (
+                <button
+                  key={i}
+                  className={`about-dot${i === aboutImageIndex ? ' about-dot--active' : ''}`}
+                  onClick={() => setAboutImageIndex(i)}
+                  aria-label={`Photo ${i + 1}`}
+                />
+              ))}
+            </div>
           </motion.div>
           <motion.div className="about-copy" variants={fadeUp} custom={2} initial="hidden" whileInView="visible" viewport={{ once: true }}>
             <h3><em>Augment</em> AI</h3>
-            <p>Augment AI, an initiative by the Information Science Department at BMS College of Engineering, is a thriving community dedicated to Artificial Intelligence. Our vision is to bring together like-minded individuals who are passionate about AI, fostering learning, collaboration, and innovation.</p>
+            <p>Augment AI, an initiative by the Information Science Department at BMS College of Engineering, is a thriving community dedicated to Artificial Intelligence. Our vision is to bring together like‑minded individuals who are passionate about AI, fostering learning, collaboration, and innovation.</p>
             <p>Through workshops, projects, and events, we equip students with hands-on experience in AI and its real-world applications. This hackathon challenges participants to build AI-driven solutions that enhance existing services and push the boundaries of what AI can achieve.</p>
           </motion.div>
         </div>
