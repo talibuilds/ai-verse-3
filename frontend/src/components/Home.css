@@ -602,10 +602,9 @@
   z-index: 0; pointer-events: none;
 }
 .about-copy {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 2rem 3rem;
-  align-items: start;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
 }
 .about-copy h3 {
   font-family: var(--font-display);
@@ -615,8 +614,7 @@
   text-transform: uppercase;
   color: var(--pure-white);
   line-height: 1;
-  margin-bottom: 0;
-  grid-column: 1 / -1;
+  margin-bottom: 0.5rem;
 }
 .about-copy h3 em {
   font-style: normal;
@@ -629,6 +627,7 @@
   line-height: 1.9;
   margin-bottom: 0;
   text-align: left;
+  max-width: 900px;
 }
 
 /* ============================================================
@@ -805,7 +804,6 @@
   .section h2 { font-size: clamp(2.5rem,10vw,4rem); }
   .nav-logo { font-size: 1.4rem; }
   .footer { padding: 2.5rem 5vw; }
-  .about-copy { grid-template-columns: 1fr; gap: 1rem; }
   .about-copy h3 { font-size: clamp(2rem,8vw,3rem); }
   .faq-q { padding: 1.2rem 1.25rem; }
   .faq-a { padding: 0 1.25rem; }
