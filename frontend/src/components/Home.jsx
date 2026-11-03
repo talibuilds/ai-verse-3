@@ -1,15 +1,22 @@
-import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
+import { motion, useMotionValue, useSpring } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import heroImg from '../../assets/heroImg.jpg';
 import './Home.css';
 import ProblemStatements from './ProblemStatements';
 import Timeline from './Timeline';
 import Judges from './Judges';
+import ParticleCanvas from './ParticleCanvas';
+import Countdown from './Countdown';
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 40 },
-  visible: (i = 1) => ({ opacity: 1, y: 0, transition: { delay: i * 0.13, duration: 0.7, ease: [0.22,1,0.36,1] } }),
+  hidden: { opacity: 0, y: 44 },
+  visible: (i = 1) => ({ opacity: 1, y: 0, transition: { delay: i * 0.12, duration: 0.75, ease: [0.22,1,0.36,1] } }),
+};
+
+const letterAnim = {
+  hidden: { opacity: 0, y: 60, rotateX: -40 },
+  visible: (i) => ({ opacity: 1, y: 0, rotateX: 0, transition: { delay: 0.3 + i * 0.06, duration: 0.6, ease: [0.22,1,0.36,1] } }),
 };
 
 const team = [
@@ -30,18 +37,55 @@ const faqs = [
 ];
 
 const TICKER_ITEMS = [
-  'AI VERSE 3.0', '48 Hours', 'Dec 7 2026', 'Prize Pool', 'Register Now',
+  'AI VERSE 3.0', '48 Hours', 'Dec 7 2026', '₹50,000 Prize Pool', 'Register Now',
   'Augment AI', 'BMSCE', 'Ideas to Impact', 'Code to Creation', 'Online Hackathon',
+  'Team Size 3–5', 'Entry ₹350',
 ];
 
 const suppliedAboutImages = Object.values(import.meta.glob('../../assets/about*.{jpg,jpeg,png,webp}', {
   eager: true, query: '?url', import: 'default',
 })).sort();
 
+const TITLE_1 = 'AI VERSE'.split('');
+const TITLE_2 = '3.0'.split('');
+
+function SplitTitle({ chars, className, startIndex = 0 }) {
+  return (
+    <span className={`split-title ${className}`} aria-hidden="true" style={{ perspective: '600px', display: 'inline-block' }}>
+      {chars.map((ch, i) => (
+        <motion.span
+          key={i}
+          custom={startIndex + i}
+          variants={letterAnim}
+          initial="hidden"
+          animate="visible"
+          style={{ display: 'inline-block', transformOrigin: 'bottom center' }}
+        >
+          {ch === ' ' ? '\u00A0' : ch}
+        </motion.span>
+      ))}
+    </span>
+  );
+}
+
 export default function Home() {
   const [aboutImageIndex, setAboutImageIndex] = useState(0);
   const [navOpen, setNavOpen] = useState(false);
+  const [openFaq, setOpenFaq] = useState(null);
+  const spotlightRef = useRef(null);
   const aboutImages = suppliedAboutImages.length ? suppliedAboutImages : [heroImg];
+
+  // Cursor spotlight
+  const spotX = useMotionValue(-300);
+  const spotY = useMotionValue(-300);
+  const springX = useSpring(spotX, { stiffness: 120, damping: 20 });
+  const springY = useSpring(spotY, { stiffness: 120, damping: 20 });
+
+  useEffect(() => {
+    const move = (e) => { spotX.set(e.clientX); spotY.set(e.clientY); };
+    window.addEventListener('mousemove', move);
+    return () => window.removeEventListener('mousemove', move);
+  }, [spotX, spotY]);
 
   useEffect(() => {
     if (aboutImages.length < 2) return undefined;
@@ -51,6 +95,14 @@ export default function Home() {
 
   return (
     <div className="home">
+      <ParticleCanvas />
+
+      {/* CURSOR SPOTLIGHT */}
+      <motion.div
+        className="cursor-spotlight"
+        style={{ left: springX, top: springY }}
+        aria-hidden="true"
+      />
 
       {/* NAVBAR */}
       <nav className="navbar">
@@ -82,43 +134,31 @@ export default function Home() {
 
         <div className="hero-content">
           <motion.span className="edition-tag" variants={fadeUp} custom={0} initial="hidden" animate="visible">
-            AI VERSE 3.0 &nbsp;&middot;&nbsp; 2026
+            <span className="live-dot" aria-hidden="true" /> AI VERSE 3.0 &nbsp;&middot;&nbsp; 2026
           </motion.span>
 
           <div className="hero-title-wrap">
-            <motion.h1
-              data-text="AI VERSE"
-              variants={fadeUp} custom={1} initial="hidden" animate="visible"
-            >
-              AI&nbsp;<span className="accent">VERSE</span>
-            </motion.h1>
-            <motion.h1
-              data-text="3.0"
-              variants={fadeUp} custom={1.4} initial="hidden" animate="visible"
-              style={{ fontSize: 'clamp(6rem,13vw,13rem)', lineHeight: 0.85, marginTop: '-0.05em' }}
-            >
-              <span className="accent">3.0</span>
-            </motion.h1>
+            <h1 className="hero-h1-line1">
+              <SplitTitle chars={TITLE_1} className="title-white" startIndex={0} />
+            </h1>
+            <h1 className="hero-h1-line2">
+              <SplitTitle chars={TITLE_2} className="title-gold" startIndex={TITLE_1.length} />
+            </h1>
           </div>
 
-          <motion.p className="hero-sub" variants={fadeUp} custom={2.5} initial="hidden" animate="visible">
+          <motion.p className="hero-sub" variants={fadeUp} custom={3} initial="hidden" animate="visible">
             Ideas to Impact &nbsp;&middot;&nbsp; Code to Creation
           </motion.p>
 
-          <motion.div className="hero-cta" variants={fadeUp} custom={3} initial="hidden" animate="visible">
-            <Link to="/register" className="btn-primary">Register Now</Link>
+          <motion.div className="hero-cta" variants={fadeUp} custom={3.6} initial="hidden" animate="visible">
+            <Link to="/register" className="btn-primary">
+              <span className="btn-inner">Register Now</span>
+              <span className="btn-shine" aria-hidden="true" />
+            </Link>
             <a href="#about" className="btn-outline">About Augment AI</a>
           </motion.div>
 
-          <motion.div className="hero-stats" variants={fadeUp} custom={3.8} initial="hidden" animate="visible">
-            <div className="stat"><span>&#8377;50K</span><p>Prize Pool</p></div>
-            <div className="stat-divider" />
-            <div className="stat"><span>48H</span><p>Duration</p></div>
-            <div className="stat-divider" />
-            <div className="stat"><span>7 DEC</span><p>2026</p></div>
-            <div className="stat-divider" />
-            <div className="stat"><span>3&ndash;5</span><p>Team Size</p></div>
-          </motion.div>
+          <Countdown />
         </div>
 
         {/* Right image panel */}
@@ -128,6 +168,25 @@ export default function Home() {
           <div className="hero-image-corner tr" />
           <div className="hero-image-corner bl" />
           <div className="hero-image-corner br" />
+          {/* Floating stats overlay */}
+          <motion.div
+            className="hero-stat-badge"
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 1.2, duration: 0.7, ease: [0.22,1,0.36,1] }}
+          >
+            <span className="hsb-value">₹50K</span>
+            <span className="hsb-label">Prize Pool</span>
+          </motion.div>
+          <motion.div
+            className="hero-stat-badge hero-stat-badge--b"
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 1.5, duration: 0.7, ease: [0.22,1,0.36,1] }}
+          >
+            <span className="hsb-value">48H</span>
+            <span className="hsb-label">Non-Stop</span>
+          </motion.div>
         </div>
       </section>
 
@@ -135,9 +194,34 @@ export default function Home() {
       <div className="marquee-strip" aria-hidden="true">
         <div className="marquee-track">
           {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (
-            <span key={i} className={item === '·' ? 'sep' : ''}>{item} <span className="sep">&nbsp;&#9670;&nbsp;</span></span>
+            <span key={i}>{item}<span className="sep">&nbsp;&#9670;&nbsp;</span></span>
           ))}
         </div>
+      </div>
+
+      {/* STATS BAR */}
+      <div className="stats-bar">
+        {[
+          { v: '₹50,000', l: 'Prize Pool' },
+          { v: '48', l: 'Hours' },
+          { v: '7 DEC', l: '2026' },
+          { v: '3–5', l: 'Team Size' },
+          { v: '₹350', l: 'Entry Fee' },
+        ].map(({ v, l }, i) => (
+          <motion.div
+            key={l}
+            className="stats-bar-item"
+            variants={fadeUp}
+            custom={i}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            whileHover={{ scale: 1.06 }}
+          >
+            <span className="stats-bar-val">{v}</span>
+            <span className="stats-bar-label">{l}</span>
+          </motion.div>
+        ))}
       </div>
 
       {/* ABOUT */}
@@ -176,7 +260,12 @@ export default function Home() {
         <div className="gold-sep"><span /></div>
         <div className="cards-row">
           {team.map(([name, role], i) => (
-            <motion.div key={name} className="card" variants={fadeUp} custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+            <motion.div
+              key={name} className="card"
+              variants={fadeUp} custom={i}
+              initial="hidden" whileInView="visible" viewport={{ once: true }}
+              whileHover={{ y: -8, transition: { duration: 0.2 } }}
+            >
               <span className="card-icon" aria-hidden="true">{name.split(' ').map((p) => p[0]).join('').slice(0,2)}</span>
               <h3>{name}</h3>
               <p>{role}</p>
@@ -185,7 +274,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* FAQ */}
+      {/* FAQ — accordion */}
       <section className="faq section" id="faq">
         <motion.span className="section-label" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
           Got Questions?
@@ -196,9 +285,26 @@ export default function Home() {
         <div className="gold-sep"><span /></div>
         <br />
         {faqs.map(([question, answer], i) => (
-          <motion.div key={question} className="faq-item" variants={fadeUp} custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-            <h4>{question}</h4>
-            <p>{answer}</p>
+          <motion.div
+            key={question}
+            className={`faq-item${openFaq === i ? ' faq-open' : ''}`}
+            variants={fadeUp} custom={i}
+            initial="hidden" whileInView="visible" viewport={{ once: true }}
+            onClick={() => setOpenFaq(openFaq === i ? null : i)}
+          >
+            <div className="faq-q">
+              <h4>{question}</h4>
+              <span className="faq-icon" aria-hidden="true">{openFaq === i ? '−' : '+'}</span>
+            </div>
+            <motion.div
+              className="faq-a"
+              initial={false}
+              animate={{ height: openFaq === i ? 'auto' : 0, opacity: openFaq === i ? 1 : 0 }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
+              style={{ overflow: 'hidden' }}
+            >
+              <p>{answer}</p>
+            </motion.div>
           </motion.div>
         ))}
       </section>
@@ -223,7 +329,6 @@ export default function Home() {
           <p>Phone: <a href="tel:+919472818251">+91 94728 18251</a></p>
         </address>
       </footer>
-
     </div>
   );
 }

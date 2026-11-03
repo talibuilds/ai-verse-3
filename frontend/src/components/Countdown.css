@@ -1,0 +1,98 @@
+.countdown-wrap {
+  margin-top: 2.5rem;
+  text-align: left;
+}
+
+.countdown-eyebrow {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.8rem;
+}
+
+.countdown-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.flip-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.flip-card {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  background: rgba(11,31,58,0.9);
+  border: 1px solid var(--border-mid);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flip-top,
+.flip-bottom {
+  font-family: var(--font-display);
+  font-size: 2.6rem;
+  font-weight: 400;
+  color: var(--gold);
+  letter-spacing: 0.04em;
+  line-height: 1;
+  text-shadow: 0 0 20px rgba(212,175,99,0.5);
+  position: absolute;
+}
+
+.flip-top { top: 50%; transform: translateY(-50%); }
+.flip-bottom { top: 50%; transform: translateY(-50%); opacity: 0; }
+
+.flip-card.flipping .flip-top {
+  animation: flip-out 0.3s ease forwards;
+}
+.flip-card.flipping .flip-bottom {
+  animation: flip-in 0.3s ease forwards;
+}
+
+@keyframes flip-out {
+  0%   { opacity: 1; transform: translateY(-50%) rotateX(0deg); }
+  100% { opacity: 0; transform: translateY(-80%) rotateX(-45deg); }
+}
+@keyframes flip-in {
+  0%   { opacity: 0; transform: translateY(-20%) rotateX(45deg); }
+  100% { opacity: 1; transform: translateY(-50%) rotateX(0deg); }
+}
+
+.flip-label {
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.countdown-colon {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  color: var(--gold-dim);
+  line-height: 1;
+  padding-top: 0.2rem;
+  align-self: flex-start;
+  margin-top: 0.9rem;
+}
+
+@media (max-width: 1100px) {
+  .countdown-wrap { text-align: center; }
+  .countdown-row { justify-content: center; }
+}
+
+@media (max-width: 480px) {
+  .flip-card { width: 56px; height: 56px; }
+  .flip-top, .flip-bottom { font-size: 2rem; }
+  .countdown-colon { font-size: 1.6rem; margin-top: 0.7rem; }
+}
