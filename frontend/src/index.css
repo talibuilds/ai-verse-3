@@ -1,131 +1,166 @@
 /* ============================================================
-   DESIGN TOKENS — AI VERSE 3.0 Midnight Blue
+   AI VERSE 3.0 — MIDNIGHT GOLD SYSTEM
    ============================================================ */
-:root {
-  --navy:       #081629;
-  --deep-blue:  #102947;
-  --gold:       #D4AF63;
-  --gold-light: #e8c97a;
-  --gold-dim:   rgba(212, 175, 99, 0.35);
-  --warm-white: #F5F3ED;
-  --pure-white: #FFFFFF;
-  --silver-blue:#A9B8CA;
-  --text-muted: #7a93ad;
-  --border-dim: rgba(212, 175, 99, 0.18);
-  --border-mid: rgba(212, 175, 99, 0.35);
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
-  --font-display: 'Cormorant Garamond', Georgia, serif;
+:root {
+  --navy:        #060f1e;
+  --deep-blue:   #0b1f3a;
+  --mid-blue:    #102947;
+  --gold:        #D4AF63;
+  --gold-light:  #f0cc7a;
+  --gold-bright: #ffe08a;
+  --gold-dim:    rgba(212,175,99,0.28);
+  --gold-glow:   rgba(212,175,99,0.55);
+  --warm-white:  #F5F3ED;
+  --pure-white:  #FFFFFF;
+  --silver-blue: #A9B8CA;
+  --ice:         #c8dff5;
+  --text-muted:  #6a85a0;
+  --border-dim:  rgba(212,175,99,0.15);
+  --border-mid:  rgba(212,175,99,0.38);
+  --border-hot:  rgba(212,175,99,0.75);
+
+  --font-display: 'Bebas Neue', 'Impact', sans-serif;
+  --font-serif:   'Cormorant Garamond', Georgia, serif;
   --font-body:    'Inter', system-ui, sans-serif;
 
-  --section-pad: clamp(4rem, 8vw, 7rem) clamp(1.5rem, 8vw, 9rem);
+  --section-pad: clamp(5rem,9vw,8rem) clamp(1.5rem,7vw,8rem);
 }
 
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-html {
-  scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 body {
   font-family: var(--font-body);
-  background-color: var(--navy);
+  background: var(--navy);
   color: var(--warm-white);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Textured background — applied to body via layered SVG noise + gradients */
+/* ── SCANLINE OVERLAY ── */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
-  z-index: -2;
-  background:
-    /* grain noise */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E"),
-    /* deep radial lighting */
-    radial-gradient(ellipse 120% 80% at 60% 10%, rgba(16,41,71,0.9) 0%, transparent 65%),
-    radial-gradient(ellipse 80% 60% at 10% 80%, rgba(16,41,71,0.6) 0%, transparent 60%),
-    var(--navy);
+  z-index: 9999;
   pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.03) 2px,
+    rgba(0,0,0,0.03) 4px
+  );
 }
 
-/* Orbital decorative layer */
+/* ── NOISE GRAIN ── */
 body::after {
   content: '';
   position: fixed;
-  inset: 0;
-  z-index: -1;
-  background:
-    radial-gradient(circle 1px at 18% 22%, var(--gold) 0%, transparent 1px),
-    radial-gradient(circle 1px at 82% 15%, var(--gold) 0%, transparent 1px),
-    radial-gradient(circle 1px at 55% 70%, var(--gold) 0%, transparent 1px),
-    radial-gradient(circle 1px at 30% 85%, var(--gold) 0%, transparent 1px),
-    radial-gradient(circle 1px at 90% 60%, var(--gold) 0%, transparent 1px),
-    radial-gradient(circle 1px at 70% 40%, var(--gold) 0%, transparent 1px),
-    radial-gradient(circle 1px at 12% 55%, var(--gold) 0%, transparent 1px),
-    radial-gradient(circle 1px at 45% 30%, var(--gold) 0%, transparent 1px);
-  opacity: 0.4;
+  inset: -50%;
+  z-index: 9998;
   pointer-events: none;
+  width: 200%;
+  height: 200%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.028;
+  animation: grain 0.4s steps(1) infinite;
 }
 
-/* ============================================================
-   TYPOGRAPHY UTILITIES
-   ============================================================ */
-.display-heading {
-  font-family: var(--font-display);
-  font-weight: 700;
-  color: var(--pure-white);
-  line-height: 1.05;
+@keyframes grain {
+  0%  { transform: translate(0,0); }
+  10% { transform: translate(-2%,-3%); }
+  20% { transform: translate(3%,1%); }
+  30% { transform: translate(-1%,4%); }
+  40% { transform: translate(4%,-2%); }
+  50% { transform: translate(-3%,3%); }
+  60% { transform: translate(2%,-4%); }
+  70% { transform: translate(-4%,2%); }
+  80% { transform: translate(1%,-1%); }
+  90% { transform: translate(-2%,4%); }
+  100%{ transform: translate(3%,-3%); }
 }
 
-.section-heading {
-  font-family: var(--font-display);
-  font-size: clamp(2.2rem, 4vw, 3.2rem);
-  font-weight: 700;
-  color: var(--pure-white);
-  text-align: center;
-  letter-spacing: 0.02em;
-}
-
-.gold-accent {
-  color: var(--gold);
-}
-
-/* Gold diamond separator */
+/* ── GOLD SEPARATOR ── */
 .gold-sep {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.75rem;
-  margin: 1.25rem auto;
+  gap: 0.8rem;
+  margin: 1.2rem auto 1.8rem;
 }
 .gold-sep::before,
 .gold-sep::after {
   content: '';
   display: block;
-  width: 60px;
   height: 1px;
+  width: 80px;
   background: linear-gradient(to right, transparent, var(--gold-dim));
 }
-.gold-sep::after {
-  background: linear-gradient(to left, transparent, var(--gold-dim));
-}
+.gold-sep::after { background: linear-gradient(to left, transparent, var(--gold-dim)); }
 .gold-sep span {
-  width: 6px;
-  height: 6px;
+  width: 7px; height: 7px;
   background: var(--gold);
   transform: rotate(45deg);
   flex-shrink: 0;
+  box-shadow: 0 0 8px var(--gold-glow);
 }
 
-/* ============================================================
-   REDUCED MOTION
-   ============================================================ */
+/* ── SECTION LABEL ── */
+.section-label {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+/* ── SECTION H2 ── */
+.section h2 {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 6vw, 5rem);
+  font-weight: 400;
+  color: var(--pure-white);
+  text-align: center;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  margin-bottom: 0.4rem;
+  text-transform: uppercase;
+}
+
+.section > p {
+  text-align: center;
+  color: var(--silver-blue);
+  max-width: 580px;
+  margin: 0 auto 3rem;
+  font-size: 0.97rem;
+  line-height: 1.8;
+}
+
+.section { padding: var(--section-pad); position: relative; }
+
+/* ── GLITCH UTILITY ── */
+@keyframes glitch-1 {
+  0%,100% { clip-path: inset(0 0 95% 0); transform: translate(-3px,0); }
+  20%      { clip-path: inset(30% 0 50% 0); transform: translate(3px,0); }
+  40%      { clip-path: inset(60% 0 20% 0); transform: translate(-2px,0); }
+  60%      { clip-path: inset(80% 0 5% 0);  transform: translate(2px,0); }
+  80%      { clip-path: inset(10% 0 70% 0); transform: translate(-1px,0); }
+}
+@keyframes glitch-2 {
+  0%,100% { clip-path: inset(50% 0 30% 0); transform: translate(3px,0); color: var(--gold-bright); }
+  25%     { clip-path: inset(10% 0 80% 0); transform: translate(-3px,0); }
+  50%     { clip-path: inset(70% 0 10% 0); transform: translate(2px,0); }
+  75%     { clip-path: inset(20% 0 60% 0); transform: translate(-2px,0); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
