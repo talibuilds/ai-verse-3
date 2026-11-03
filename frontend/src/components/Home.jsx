@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, useMotionValue, useSpring } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import heroImg from '../../assets/heroImg.jpg';
@@ -14,10 +14,7 @@ const fadeUp = {
   visible: (i = 1) => ({ opacity: 1, y: 0, transition: { delay: i * 0.12, duration: 0.75, ease: [0.22,1,0.36,1] } }),
 };
 
-const letterAnim = {
-  hidden: { opacity: 0, y: 60, rotateX: -40 },
-  visible: (i) => ({ opacity: 1, y: 0, rotateX: 0, transition: { delay: 0.3 + i * 0.06, duration: 0.6, ease: [0.22,1,0.36,1] } }),
-};
+
 
 const team = [
   ['Yukta C', 'Club Coordinator'], ['Mayank Jha', 'Club Coordinator'],
@@ -46,33 +43,12 @@ const suppliedAboutImages = Object.values(import.meta.glob('../../assets/about*.
   eager: true, query: '?url', import: 'default',
 })).sort();
 
-const TITLE_1 = 'AI VERSE'.split('');
-const TITLE_2 = '3.0'.split('');
 
-function SplitTitle({ chars, className, startIndex = 0 }) {
-  return (
-    <span className={`split-title ${className}`} aria-hidden="true" style={{ perspective: '600px', display: 'inline-block' }}>
-      {chars.map((ch, i) => (
-        <motion.span
-          key={i}
-          custom={startIndex + i}
-          variants={letterAnim}
-          initial="hidden"
-          animate="visible"
-          style={{ display: 'inline-block', transformOrigin: 'bottom center' }}
-        >
-          {ch === ' ' ? '\u00A0' : ch}
-        </motion.span>
-      ))}
-    </span>
-  );
-}
 
 export default function Home() {
   const [aboutImageIndex, setAboutImageIndex] = useState(0);
   const [navOpen, setNavOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState(null);
-  const spotlightRef = useRef(null);
   const aboutImages = suppliedAboutImages.length ? suppliedAboutImages : [heroImg];
 
   // Cursor spotlight
@@ -137,14 +113,19 @@ export default function Home() {
             <span className="live-dot" aria-hidden="true" /> AI VERSE 3.0 &nbsp;&middot;&nbsp; 2026
           </motion.span>
 
-          <div className="hero-title-wrap">
+          <motion.div
+            className="hero-title-wrap"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.9, ease: [0.22,1,0.36,1] }}
+          >
             <h1 className="hero-h1-line1">
-              <SplitTitle chars={TITLE_1} className="title-white" startIndex={0} />
+              <span className="glitch-wrap title-white" data-text="AI VERSE" aria-label="AI VERSE">AI VERSE</span>
             </h1>
             <h1 className="hero-h1-line2">
-              <SplitTitle chars={TITLE_2} className="title-gold" startIndex={TITLE_1.length} />
+              <span className="glitch-wrap title-gold" data-text="3.0" aria-label="3.0">3.0</span>
             </h1>
-          </div>
+          </motion.div>
 
           <motion.p className="hero-sub" variants={fadeUp} custom={3} initial="hidden" animate="visible">
             Ideas to Impact &nbsp;&middot;&nbsp; Code to Creation
