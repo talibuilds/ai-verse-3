@@ -11,46 +11,61 @@ export default function ParticleCanvas() {
     const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
 
+    // Media queries
     const mobileQuery = window.matchMedia('(max-width: 768px)');
     const reducedMotionQuery = window.matchMedia(
       '(prefers-reduced-motion: reduce)'
     );
+    const pointerQuery = window.matchMedia(
+      '(hover: hover) and (pointer: fine)'
+    );
 
-    const isMobile = mobileQuery.matches;
-    const reducedMotion = reducedMotionQuery.matches;
+    // Dynamic settings
+    let isMobile = mobileQuery.matches;
+    let reducedMotion = reducedMotionQuery.matches;
+    let hasFinePointer = pointerQuery.matches;
 
-    const COUNT = isMobile ? 24 : 65;
-    const MAX_DISTANCE = isMobile ? 85 : 110;
-    const FRAME_INTERVAL = isMobile ? 1000 / 30 : 1000 / 60;
+    let COUNT = isMobile ? 24 : 65;
+    let MAX_DISTANCE = isMobile ? 85 : 110;
+    let FRAME_INTERVAL = isMobile ? 1000 / 30 : 1000 / 60;
 
     let width = window.innerWidth;
     let height = window.innerHeight;
-    let dpr = Math.min(window.devicePixelRatio || 1, isMobile ? 1 : 1.5);
+    let dpr = 1;
+
     let animationId = null;
     let lastFrame = 0;
     let isVisible = !document.hidden;
 
     const mouse = { x: -9999, y: -9999 };
 
-    const particles = Array.from({ length: COUNT }, () => ({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      vx: (Math.random() - 0.5) * 0.3,
-      vy: (Math.random() - 0.5) * 0.3,
-      r: Math.random() * 1.3 + 0.4,
-      alpha: Math.random() * 0.4 + 0.15,
-    }));
+    let particles = [];
 
+    // Create particles using the current device settings.
+    const createParticles = () => {
+      particles = Array.from({ length: COUNT }, () => ({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        r: Math.random() * 1.3 + 0.4,
+        alpha: Math.random() * 0.4 + 0.15,
+      }));
+    };
+
+    // Configure canvas resolution.
     const resize = () => {
       width = window.innerWidth;
       height = window.innerHeight;
+
       dpr = Math.min(
         window.devicePixelRatio || 1,
-        mobileQuery.matches ? 1 : 1.5
+        isMobile ? 1 : 1.5
       );
 
       canvas.width = Math.round(width * dpr);
       canvas.height = Math.round(height * dpr);
+
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
 
@@ -69,17 +84,35 @@ export default function ParticleCanvas() {
       mouse.y = event.clientY;
     };
 
+    // Enable or disable desktop mouse interaction dynamically.
+    const syncMouseInteraction = () => {
+      const shouldEnableMouse = !isMobile && hasFinePointer;
+
+      window.removeEventListener('mousemove', onMouseMove);
+
+      if (shouldEnableMouse) {
+        window.addEventListener('mousemove', onMouseMove, {
+          passive: true,
+        });
+      } else {
+        mouse.x = -9999;
+        mouse.y = -9999;
+      }
+    };
+
+    // Draw particles and connecting lines.
     const draw = () => {
       ctx.clearRect(0, 0, width, height);
 
       particles.forEach((p) => {
-        if (!isMobile && !reducedMotion) {
+        if (!isMobile && hasFinePointer && !reducedMotion) {
           const dx = p.x - mouse.x;
           const dy = p.y - mouse.y;
           const distance = Math.hypot(dx, dy);
 
           if (distance > 0 && distance < 120) {
             const force = (120 - distance) / 120;
+
             p.vx += (dx / distance) * force * 0.45;
             p.vy += (dy / distance) * force * 0.45;
           }
@@ -104,7 +137,7 @@ export default function ParticleCanvas() {
         ctx.fill();
       });
 
-      // Draw connecting lines.
+      // Connecting lines.
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x;
@@ -126,8 +159,12 @@ export default function ParticleCanvas() {
       }
     };
 
+    // Animation loop.
     const animate = (timestamp) => {
-      if (!isVisible || reducedMotion) return;
+      if (!isVisible || reducedMotion) {
+        animationId = null;
+        return;
+      }
 
       if (timestamp - lastFrame >= FRAME_INTERVAL) {
         draw();
@@ -139,6 +176,8 @@ export default function ParticleCanvas() {
 
     const startAnimation = () => {
       if (animationId !== null || !isVisible || reducedMotion) return;
+
+      lastFrame = 0;
       animationId = requestAnimationFrame(animate);
     };
 
@@ -149,6 +188,54 @@ export default function ParticleCanvas() {
       }
     };
 
+    // Update settings when switching between mobile and desktop.
+    const handleDeviceModeChange = () => {
+      const wasMobile = isMobile;
+      const hadFinePointer = hasFinePointer;
+
+      isMobile = mobileQuery.matches;
+      hasFinePointer = pointerQuery.matches;
+
+      const settingsChanged =
+        wasMobile !== isMobile ||
+        hadFinePointer !== hasFinePointer;
+
+      if (!settingsChanged) return;
+
+      COUNT = isMobile ? 24 : 65;
+      MAX_DISTANCE = isMobile ? 85 : 110;
+      FRAME_INTERVAL = isMobile ? 1000 / 30 : 1000 / 60;
+
+      // Reset mouse position and update interaction.
+      mouse.x = -9999;
+      mouse.y = -9999;
+
+      syncMouseInteraction();
+
+      // Recreate particles for the new device mode.
+      createParticles();
+
+      // Apply the new canvas resolution.
+      resize();
+
+      // Restart using the new frame rate.
+      stopAnimation();
+      startAnimation();
+    };
+
+    // Respond to changes in reduced-motion preference.
+    const handleReducedMotionChange = () => {
+      reducedMotion = reducedMotionQuery.matches;
+
+      if (reducedMotion) {
+        stopAnimation();
+        draw();
+      } else {
+        startAnimation();
+      }
+    };
+
+    // Pause animation when the tab is hidden.
     const handleVisibility = () => {
       isVisible = !document.hidden;
 
@@ -159,24 +246,41 @@ export default function ParticleCanvas() {
       }
     };
 
+    // Initial setup.
+    createParticles();
     resize();
+    syncMouseInteraction();
 
     if (!reducedMotion) {
       startAnimation();
     }
 
+    // Event listeners.
     window.addEventListener('resize', resize, { passive: true });
     document.addEventListener('visibilitychange', handleVisibility);
 
-    if (!isMobile) {
-      window.addEventListener('mousemove', onMouseMove, { passive: true });
-    }
+    mobileQuery.addEventListener('change', handleDeviceModeChange);
+    pointerQuery.addEventListener('change', handleDeviceModeChange);
+    reducedMotionQuery.addEventListener(
+      'change',
+      handleReducedMotionChange
+    );
 
+    // Cleanup.
     return () => {
       stopAnimation();
+
       window.removeEventListener('resize', resize);
       window.removeEventListener('mousemove', onMouseMove);
+
       document.removeEventListener('visibilitychange', handleVisibility);
+
+      mobileQuery.removeEventListener('change', handleDeviceModeChange);
+      pointerQuery.removeEventListener('change', handleDeviceModeChange);
+      reducedMotionQuery.removeEventListener(
+        'change',
+        handleReducedMotionChange
+      );
     };
   }, []);
 
