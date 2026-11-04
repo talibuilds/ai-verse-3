@@ -121,7 +121,7 @@
 }
 .intro-boot-text {
   font-family: 'Courier New', monospace;
-  font-size: clamp(0.6rem, 1.2vw, 0.8rem);
+  font-size: clamp(0.9rem, 1.9vw, 5.8rem);
   color: rgba(212,175,99,0.6);
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -403,23 +403,32 @@
     opacity: 0.7;
   }
 
+  /* Keep a lightweight glitch on mobile instead of disabling it entirely. */
   .intro-glitch-r,
   .intro-glitch-b {
-    display: none !important;
-    animation: none !important;
+    display: block;
+    font-size: clamp(3.6rem, 17vw, 6rem);
   }
 
   .intro--glitch .intro-stage {
-    animation: none !important;
+    animation: mobile-stage-glitch 0.48s steps(2) both;
   }
 
   .intro--glitch::before {
-    display: none;
-    animation: none !important;
+    display: block;
+    animation: white-flash 0.48s steps(1) both;
   }
 
   .intro-panel {
-    transition-duration: 0.38s;
+    transition-duration: 0.42s;
+  }
+
+  @keyframes mobile-stage-glitch {
+    0%, 100% { transform: translate3d(0, 0, 0); }
+    20% { transform: translate3d(-3px, 1px, 0); }
+    40% { transform: translate3d(3px, -1px, 0); }
+    60% { transform: translate3d(-2px, 0, 0); }
+    80% { transform: translate3d(2px, 1px, 0); }
   }
 
   .intro-logo-ai,
@@ -511,5 +520,90 @@
   .intro::before {
     animation: none !important;
     transition: none !important;
+  }
+}
+
+
+/* Mobile-only intro layout and animation refinements.
+   Desktop presentation is intentionally unchanged. */
+@media (max-width: 768px) {
+  .intro {
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding:
+      max(1rem, env(safe-area-inset-top))
+      1rem
+      max(1rem, env(safe-area-inset-bottom));
+    box-sizing: border-box;
+  }
+
+  .intro-stage {
+    width: 100%;
+    max-width: 100%;
+    padding: 0 0.25rem;
+    box-sizing: border-box;
+  }
+
+  .intro-boot-line {
+    margin-bottom: 1.15rem;
+  }
+
+  .intro-boot-text {
+    font-size: clamp(0.58rem, 2.7vw, 0.78rem);
+    letter-spacing: 0.12em;
+  }
+
+  .intro-logo {
+    margin-bottom: 1rem;
+    max-width: 100%;
+  }
+
+  .intro-logo-ai,
+  .intro-logo-verse {
+    font-size: clamp(3.6rem, 17vw, 6rem);
+    line-height: 0.9;
+    letter-spacing: 0.055em;
+  }
+
+  .intro-logo-version {
+    font-size: clamp(2.4rem, 10vw, 3.4rem);
+    margin-top: 0.16em;
+  }
+
+  .intro-tagline {
+    max-width: 100%;
+    margin-bottom: 1.4rem;
+    font-size: clamp(0.55rem, 2.45vw, 0.72rem);
+    line-height: 1.5;
+    letter-spacing: 0.12em;
+    padding: 0 0.4rem;
+  }
+
+  .intro-progress-wrap {
+    width: min(220px, 68vw);
+  }
+
+  .intro--glitch .intro-glitch-r,
+  .intro--glitch .intro-glitch-b {
+    animation-duration: 0.48s;
+  }
+
+  .intro--split .intro-stage {
+    animation-duration: 0.38s;
+  }
+
+  .intro--split {
+    transition-duration: 0.42s;
+  }
+}
+
+@media (max-width: 380px) {
+  .intro-logo-ai,
+  .intro-logo-verse {
+    font-size: clamp(3.25rem, 16.5vw, 4.2rem);
+  }
+
+  .intro-tagline {
+    letter-spacing: 0.08em;
   }
 }
