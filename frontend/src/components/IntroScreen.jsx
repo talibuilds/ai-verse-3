@@ -95,7 +95,7 @@ export default function IntroScreen({ onDone }) {
       <div className="intro-stage">
         <div className="intro-boot-line">
           <span className="intro-boot-text">
-            AUGMENT_AI://BOOT_SEQUENCE
+            AUGMENT_AI
           </span>
           <span className="intro-cursor" />
         </div>
