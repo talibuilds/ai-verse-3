@@ -168,23 +168,41 @@ export default function Home() {
     };
   }, [spotX, spotY, shouldReduceMotion]);
 
-  // About image carousel - slower on mobile.
+  // About image carousel - dynamically adapts to screen size.
   useEffect(() => {
     if (aboutImages.length < 2 || shouldReduceMotion) {
       return undefined;
     }
 
-    const isMobile = window.matchMedia(
+    const mobileQuery = window.matchMedia(
       '(max-width: 768px)'
-    ).matches;
+    );
 
-    const interval = isMobile ? 6500 : 4500;
+    let timer;
 
-    const timer = window.setInterval(() => {
-      setAboutImageIndex((index) => (index + 1) % aboutImages.length);
-    }, interval);
+    const startCarousel = () => {
+      // Clear the previous interval before applying new timing.
+      window.clearInterval(timer);
 
-    return () => window.clearInterval(timer);
+      const interval = mobileQuery.matches ? 6500 : 4500;
+
+      timer = window.setInterval(() => {
+        setAboutImageIndex(
+          (index) => (index + 1) % aboutImages.length
+        );
+      }, interval);
+    };
+
+    // Start with the current screen size.
+    startCarousel();
+
+    // Restart automatically whenever the screen crosses 768px.
+    mobileQuery.addEventListener('change', startCarousel);
+
+    return () => {
+      window.clearInterval(timer);
+      mobileQuery.removeEventListener('change', startCarousel);
+    };
   }, [aboutImages.length, shouldReduceMotion]);
 
   return (
