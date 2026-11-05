@@ -107,7 +107,7 @@ export default function IntroScreen({ onDone }) {
         </div>
 
         <div className="intro-tagline">
-          Ideas to Impact &nbsp;·&nbsp; Code to Creation
+          Don't just prompt &nbsp;·&nbsp; Make it happen
         </div>
 
         <div className="intro-progress-wrap">

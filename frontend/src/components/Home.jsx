@@ -7,7 +7,20 @@ import {
   useReducedMotion,
 } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import heroImg from '../../assets/heroImg.jpg';
+import heroImg from '../../assets/heroimg.png';
+import aboutImage1 from '../../assets/1.jpeg';
+import aboutImage2 from '../../assets/2.jpeg';
+import aboutImage3 from '../../assets/3.jpeg';
+import aboutImage4 from '../../assets/4.jpeg';
+import aboutImage5 from '../../assets/5.jpeg';
+import abhinavKrishnaImg from '../../assets/Abhinav_Krishna_Club_Coordinator.png';
+import kanishkaPandaImg from '../../assets/Kanishka_Panda_Marketing_Head.png';
+import kirtiKumariImg from '../../assets/Kirti_Kumari_CLub_Coordinator.png';
+import kshitizGuptaImg from '../../assets/Kshitiz_Gupta_Content_Head.png';
+import oishaniChattarajImg from '../../assets/Oishani_Chattaraj_Sponsorship_Head.png';
+import shrihariVishwanathanImg from '../../assets/Shrihari_Vishwanathan_Vice_Tech_President.jpg';
+import talibKhanImg from '../../assets/Talib_Khan_President_Tech.png';
+import tanishkKarImg from '../../assets/Tanishk_Kar_Social_Media_Head.png';
 import './Home.css';
 import ProblemStatements from './ProblemStatements';
 import Timeline from './Timeline';
@@ -30,14 +43,51 @@ const fadeUp = {
 };
 
 const team = [
-  ['Yukta C', 'Club Coordinator'],
-  ['Mayank Jha', 'Club Coordinator'],
-  ['Vishwajit Anand', 'President Tech'],
-  ['Tanmay Shetty', 'Vice-President Tech'],
-  ['Shrijani', 'Content Head'],
-  ['Sanjana Prasad', 'Sponsorship Head'],
-  ['Abhinav Krishna', 'Social Media Head'],
-  ['Prateek Khatri', 'Design Head'],
+  {
+    name: 'Abhinav Krishna',
+    role: 'Club Coordinator',
+    image: abhinavKrishnaImg,
+  },
+  {
+    name: 'Kirti Kumari',
+    role: 'Club Coordinator',
+    image: kirtiKumariImg,
+  },
+  {
+    name: 'Talib Khan',
+    role: 'President Tech',
+    image: talibKhanImg,
+  },
+  {
+    name: 'Shrihari Vishwanathan',
+    role: 'Vice-President Tech',
+    image: shrihariVishwanathanImg,
+  },
+  {
+    name: 'Kshitiz Gupta',
+    role: 'Content Head',
+    image: kshitizGuptaImg,
+  },
+  {
+    name: 'Oishani Chattaraj',
+    role: 'Sponsorship Head',
+    image: oishaniChattarajImg,
+  },
+  {
+    name: 'Kanishka Panda',
+    role: 'Marketing Head',
+    image: kanishkaPandaImg,
+  },
+  {
+    name: 'Tanishk Kar',
+    role: 'Social Media Head',
+    image: tanishkKarImg,
+  },
+  {
+    name: 'Mariam Umar',
+    role: 'Design Head',
+    image: null,
+  },
 ];
 
 const faqs = [
@@ -78,21 +128,21 @@ const TICKER_ITEMS = [
   '₹50,000 Prize Pool',
   'Register Now',
   'Augment AI',
-  'BMSCE',
-  'Ideas to Impact',
-  'Code to Creation',
+  'AI Agents',
+  'Reason · Plan · Act',
+  'Real-World Workflows',
   'Online Hackathon',
   'Team Size 3–5',
   'Entry ₹350',
 ];
 
-const suppliedAboutImages = Object.values(
-  import.meta.glob('../../assets/*.{jpg,jpeg,png,webp}', {
-    eager: true,
-    query: '?url',
-    import: 'default',
-  })
-).sort();
+const aboutImages = [
+  aboutImage1,
+  aboutImage2,
+  aboutImage3,
+  aboutImage4,
+  aboutImage5,
+];
 
 export default function Home() {
   const [aboutImageIndex, setAboutImageIndex] = useState(0);
@@ -108,10 +158,6 @@ export default function Home() {
   );
 
   const shouldReduceMotion = useReducedMotion();
-
-  const aboutImages = suppliedAboutImages.filter(
-    (src) => !src.includes('heroImg')
-  );
 
   // Keep the intro completion callback stable.
   const handleIntroDone = useCallback(() => {
@@ -203,7 +249,7 @@ export default function Home() {
       window.clearInterval(timer);
       mobileQuery.removeEventListener('change', startCarousel);
     };
-  }, [aboutImages.length, shouldReduceMotion]);
+  }, [shouldReduceMotion]);
 
   return (
     <div className="home">
@@ -229,7 +275,7 @@ export default function Home() {
           onClick={handleLogoClick}
           aria-label="AI Verse 3.0 - Back to top"
         >
-          AI <span className="accent">VERSE 3.0</span>
+          AGENT<span className="accent">VERSE 3.0</span>
         </a>
 
         <button
@@ -363,7 +409,7 @@ export default function Home() {
             initial="hidden"
             animate="visible"
           >
-            Ideas to Impact &nbsp;&middot;&nbsp; Code to Creation
+            Don't just prompt. Make it happen.
           </motion.p>
 
           <motion.div
@@ -395,7 +441,7 @@ export default function Home() {
           {!heroImageFailed ? (
             <img
               src={heroImg}
-              alt="AI Verse hackathon"
+              alt="AI VERSE hackathon"
               onError={() => setHeroImageFailed(true)}
             />
           ) : (
@@ -409,7 +455,7 @@ export default function Home() {
               </span>
 
               <span className="image-fallback-subtitle">
-                Ideas to Impact · Code to Creation
+                Don't just prompt · Make it happen
               </span>
             </div>
           )}
@@ -598,18 +644,15 @@ export default function Home() {
 
             <p>
               Augment AI, an initiative by the Information Science Department
-              at BMS College of Engineering, is a thriving community dedicated
-              to Artificial Intelligence. Our vision is to bring together
-              like-minded individuals who are passionate about AI, fostering
-              learning, collaboration, and innovation.
+              at BMS College of Engineering, brings together builders who want
+              to turn intelligent ideas into useful, autonomous agents.
             </p>
 
             <p>
-              Through workshops, projects, and events, we equip students
-              with hands-on experience in AI and its real-world applications.
-              This hackathon challenges participants to build AI-driven
-              solutions that enhance existing services and push the
-              boundaries of what AI can achieve.
+              Through AI VERSE, participants build agents that can reason,
+              plan, use tools, and complete real-world tasks. Build a Research
+              Agent, Campus Copilot, Disaster Response Agent, or any workflow
+              that proves your agent can make an impact.
             </p>
           </motion.div>
         </div>
@@ -646,7 +689,7 @@ export default function Home() {
         </div>
 
         <div className="cards-row">
-          {team.map(([name, role], i) => (
+          {team.map(({ name, role, image }, i) => (
             <motion.div
               key={name}
               className="card"
@@ -664,13 +707,13 @@ export default function Home() {
                     }
               }
             >
-              <span className="card-icon" aria-hidden="true">
-                {name
-                  .split(' ')
-                  .map((part) => part[0])
-                  .join('')
-                  .slice(0, 2)}
-              </span>
+              {image ? (
+                <img className="card-photo" src={image} alt={name} />
+              ) : (
+                <div className="card-photo card-photo--placeholder">
+                  Photo coming soon
+                </div>
+              )}
 
               <h3>{name}</h3>
               <p>{role}</p>
