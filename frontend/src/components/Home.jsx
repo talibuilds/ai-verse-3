@@ -1,5 +1,11 @@
-import { useEffect, useState } from 'react';
-import { motion, useMotionValue, useSpring } from 'framer-motion';
+
+import { useCallback, useEffect, useState } from 'react';
+import {
+  motion,
+  useMotionValue,
+  useSpring,
+  useReducedMotion,
+} from 'framer-motion';
 import { Link } from 'react-router-dom';
 import heroImg from '../../assets/heroImg.jpg';
 import './Home.css';
@@ -12,100 +18,291 @@ import IntroScreen from './IntroScreen';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 44 },
-  visible: (i = 1) => ({ opacity: 1, y: 0, transition: { delay: i * 0.12, duration: 0.75, ease: [0.22,1,0.36,1] } }),
+  visible: (i = 1) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.12,
+      duration: 0.75,
+      ease: [0.22, 1, 0.36, 1],
+    },
+  }),
 };
 
-
-
 const team = [
-  ['Yukta C', 'Club Coordinator'], ['Mayank Jha', 'Club Coordinator'],
-  ['Vishwajit Anand', 'President Tech'], ['Tanmay Shetty', 'Vice-President Tech'],
-  ['Shrijani', 'Content Head'], ['Sanjana Prasad', 'Sponsorship Head'],
-  ['Abhinav Krishna', 'Social Media Head'], ['Prateek Khatri', 'Design Head'],
+  ['Yukta C', 'Club Coordinator'],
+  ['Mayank Jha', 'Club Coordinator'],
+  ['Vishwajit Anand', 'President Tech'],
+  ['Tanmay Shetty', 'Vice-President Tech'],
+  ['Shrijani', 'Content Head'],
+  ['Sanjana Prasad', 'Sponsorship Head'],
+  ['Abhinav Krishna', 'Social Media Head'],
+  ['Prateek Khatri', 'Design Head'],
 ];
 
 const faqs = [
-  ['What technologies or platforms are allowed?', 'Any programming language, framework, or platform. No restrictions as long as your solution can be demonstrated online.'],
-  ['Can I participate individually or is a team required?', 'Teams must have a minimum of 3 and a maximum of 5 members.'],
-  ['Will certificates be provided to participants?', 'Yes, all registered participants who submit a valid project will receive a certificate of participation.'],
-  ["Is there a code of conduct?", "Yes. All participants must maintain professionalism, respect others, and adhere to the event's code of conduct. Misconduct may lead to disqualification."],
-  ['How will updates be shared during the event?', 'Via email and the official Discord server. Please check your registered email regularly.'],
-  ["Who can participate?", "Any student pursuing a bachelor's degree."],
-  ['Is it fully online?', 'Yes. All ceremonies and mentoring are virtual.'],
+  [
+    'What technologies or platforms are allowed?',
+    'Any programming language, framework, or platform. No restrictions as long as your solution can be demonstrated online.',
+  ],
+  [
+    'Can I participate individually or is a team required?',
+    'Teams must have a minimum of 3 and a maximum of 5 members.',
+  ],
+  [
+    'Will certificates be provided to participants?',
+    'Yes, all registered participants who submit a valid project will receive a certificate of participation.',
+  ],
+  [
+    'Is there a code of conduct?',
+    "Yes. All participants must maintain professionalism, respect others, and adhere to the event's code of conduct. Misconduct may lead to disqualification.",
+  ],
+  [
+    'How will updates be shared during the event?',
+    'Via email and the official Discord server. Please check your registered email regularly.',
+  ],
+  [
+    'Who can participate?',
+    "Any student pursuing a bachelor's degree.",
+  ],
+  [
+    'Is it fully online?',
+    'Yes. All ceremonies and mentoring are virtual.',
+  ],
 ];
 
 const TICKER_ITEMS = [
-  'AI VERSE 3.0', '48 Hours', 'Dec 7 2026', '₹50,000 Prize Pool', 'Register Now',
-  'Augment AI', 'BMSCE', 'Ideas to Impact', 'Code to Creation', 'Online Hackathon',
-  'Team Size 3–5', 'Entry ₹350',
+  'AI VERSE 3.0',
+  '48 Hours',
+  'Dec 7 2026',
+  '₹50,000 Prize Pool',
+  'Register Now',
+  'Augment AI',
+  'BMSCE',
+  'Ideas to Impact',
+  'Code to Creation',
+  'Online Hackathon',
+  'Team Size 3–5',
+  'Entry ₹350',
 ];
 
-const suppliedAboutImages = Object.values(import.meta.glob('../../assets/*.{jpg,jpeg,png,webp}', {
-  eager: true, query: '?url', import: 'default',
-})).sort();
-
-
+const suppliedAboutImages = Object.values(
+  import.meta.glob('../../assets/*.{jpg,jpeg,png,webp}', {
+    eager: true,
+    query: '?url',
+    import: 'default',
+  })
+).sort();
 
 export default function Home() {
   const [aboutImageIndex, setAboutImageIndex] = useState(0);
   const [navOpen, setNavOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState(null);
-  const [showIntro, setShowIntro] = useState(() => !sessionStorage.getItem('av3_intro_seen'));
-  const aboutImages = suppliedAboutImages.filter(src => !src.includes('heroImg')) || [heroImg];
 
-  const handleIntroDone = () => {
+  // Image fallback states
+  const [heroImageFailed, setHeroImageFailed] = useState(false);
+  const [failedAboutImages, setFailedAboutImages] = useState([]);
+
+  const [showIntro, setShowIntro] = useState(
+    () => !sessionStorage.getItem('av3_intro_seen')
+  );
+
+  const shouldReduceMotion = useReducedMotion();
+
+  const aboutImages = suppliedAboutImages.filter(
+    (src) => !src.includes('heroImg')
+  );
+
+  // Keep the intro completion callback stable.
+  const handleIntroDone = useCallback(() => {
     sessionStorage.setItem('av3_intro_seen', '1');
     setShowIntro(false);
+  }, []);
+
+  // Smoothly scroll to the top when the logo is clicked.
+  const handleLogoClick = (e) => {
+    e.preventDefault();
+
+    setNavOpen(false);
+
+    window.scrollTo({
+      top: 0,
+      behavior: shouldReduceMotion ? 'auto' : 'smooth',
+    });
   };
 
-  // Cursor spotlight
+  // Cursor spotlight - only enabled on desktop devices.
   const spotX = useMotionValue(-300);
   const spotY = useMotionValue(-300);
-  const springX = useSpring(spotX, { stiffness: 120, damping: 20 });
-  const springY = useSpring(spotY, { stiffness: 120, damping: 20 });
+
+  const springX = useSpring(spotX, {
+    stiffness: 120,
+    damping: 20,
+  });
+
+  const springY = useSpring(spotY, {
+    stiffness: 120,
+    damping: 20,
+  });
 
   useEffect(() => {
-    const move = (e) => { spotX.set(e.clientX); spotY.set(e.clientY); };
-    window.addEventListener('mousemove', move);
-    return () => window.removeEventListener('mousemove', move);
-  }, [spotX, spotY]);
+    const pointerQuery = window.matchMedia(
+      '(hover: hover) and (pointer: fine)'
+    );
 
+    if (!pointerQuery.matches || shouldReduceMotion) {
+      return undefined;
+    }
+
+    const move = (e) => {
+      spotX.set(e.clientX);
+      spotY.set(e.clientY);
+    };
+
+    window.addEventListener('mousemove', move, {
+      passive: true,
+    });
+
+    return () => {
+      window.removeEventListener('mousemove', move);
+    };
+  }, [spotX, spotY, shouldReduceMotion]);
+
+  // About image carousel - dynamically adapts to screen size.
   useEffect(() => {
-    if (aboutImages.length < 2) return undefined;
-    const t = window.setInterval(() => setAboutImageIndex((i) => (i + 1) % aboutImages.length), 4500);
-    return () => window.clearInterval(t);
-  }, [aboutImages.length]);
+    if (aboutImages.length < 2 || shouldReduceMotion) {
+      return undefined;
+    }
+
+    const mobileQuery = window.matchMedia(
+      '(max-width: 768px)'
+    );
+
+    let timer;
+
+    const startCarousel = () => {
+      // Clear the previous interval before applying new timing.
+      window.clearInterval(timer);
+
+      const interval = mobileQuery.matches ? 6500 : 4500;
+
+      timer = window.setInterval(() => {
+        setAboutImageIndex(
+          (index) => (index + 1) % aboutImages.length
+        );
+      }, interval);
+    };
+
+    // Start with the current screen size.
+    startCarousel();
+
+    // Restart automatically whenever the screen crosses 768px.
+    mobileQuery.addEventListener('change', startCarousel);
+
+    return () => {
+      window.clearInterval(timer);
+      mobileQuery.removeEventListener('change', startCarousel);
+    };
+  }, [aboutImages.length, shouldReduceMotion]);
 
   return (
     <div className="home">
       {showIntro && <IntroScreen onDone={handleIntroDone} />}
+
       <ParticleCanvas />
 
       {/* CURSOR SPOTLIGHT */}
       <motion.div
         className="cursor-spotlight"
-        style={{ left: springX, top: springY }}
+        style={{
+          left: springX,
+          top: springY,
+        }}
         aria-hidden="true"
       />
 
       {/* NAVBAR */}
       <nav className="navbar">
-        <span className="nav-logo">AI <span className="accent">VERSE 3.0</span></span>
-        <button
-          className="nav-toggle" type="button"
-          aria-label={navOpen ? 'Close menu' : 'Open menu'}
-          aria-expanded={navOpen} aria-controls="site-navigation"
-          onClick={() => setNavOpen((o) => !o)}
+        <a
+          href="#home"
+          className="nav-logo"
+          onClick={handleLogoClick}
+          aria-label="AI Verse 3.0 - Back to top"
         >
-          <span /><span /><span />
+          AI <span className="accent">VERSE 3.0</span>
+        </a>
+
+        <button
+          className="nav-toggle"
+          type="button"
+          aria-label={navOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={navOpen}
+          aria-controls="site-navigation"
+          onClick={() => setNavOpen((open) => !open)}
+        >
+          <span />
+          <span />
+          <span />
         </button>
-        <ul className={`nav-links${navOpen ? ' is-open' : ''}`} id="site-navigation">
-          <li><a href="#problem-statements" onClick={() => setNavOpen(false)}>Problem Statements</a></li>
-          <li><a href="#timeline" onClick={() => setNavOpen(false)}>Timeline</a></li>
-          <li><a href="#judges" onClick={() => setNavOpen(false)}>Judges</a></li>
-          <li><a href="#faq" onClick={() => setNavOpen(false)}>FAQ</a></li>
-          <li><a href="#contact" onClick={() => setNavOpen(false)}>Contact</a></li>
-          <li><Link to="/register" className="nav-cta" onClick={() => setNavOpen(false)}>Register</Link></li>
+
+        <ul
+          className={`nav-links${navOpen ? ' is-open' : ''}`}
+          id="site-navigation"
+        >
+          <li>
+            <a
+              href="#problem-statements"
+              onClick={() => setNavOpen(false)}
+            >
+              Problem Statements
+            </a>
+          </li>
+
+          <li>
+            <a
+              href="#timeline"
+              onClick={() => setNavOpen(false)}
+            >
+              Timeline
+            </a>
+          </li>
+
+          <li>
+            <a
+              href="#judges"
+              onClick={() => setNavOpen(false)}
+            >
+              Judges
+            </a>
+          </li>
+
+          <li>
+            <a
+              href="#faq"
+              onClick={() => setNavOpen(false)}
+            >
+              FAQ
+            </a>
+          </li>
+
+          <li>
+            <a
+              href="#contact"
+              onClick={() => setNavOpen(false)}
+            >
+              Contact
+            </a>
+          </li>
+
+          <li>
+            <Link
+              to="/register"
+              className="nav-cta"
+              onClick={() => setNavOpen(false)}
+            >
+              Register
+            </Link>
+          </li>
         </ul>
       </nav>
 
@@ -117,61 +314,134 @@ export default function Home() {
         <div className="hero-orbit hero-orbit-3" />
 
         <div className="hero-content">
-          <motion.span className="edition-tag" variants={fadeUp} custom={0} initial="hidden" animate="visible">
-            <span className="live-dot" aria-hidden="true" /> AI VERSE 3.0 &nbsp;&middot;&nbsp; 2026
+          <motion.span
+            className="edition-tag"
+            variants={fadeUp}
+            custom={0}
+            initial="hidden"
+            animate="visible"
+          >
+            <span className="live-dot" aria-hidden="true" />
+            AI VERSE 3.0 &nbsp;&middot;&nbsp; 2026
           </motion.span>
 
           <motion.div
             className="hero-title-wrap"
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.9, ease: [0.22,1,0.36,1] }}
+            transition={{
+              delay: 0.2,
+              duration: 0.9,
+              ease: [0.22, 1, 0.36, 1],
+            }}
           >
             <h1 className="hero-h1-line1">
-              <span className="glitch-wrap title-white" data-text="AI VERSE" aria-label="AI VERSE">AI VERSE</span>
+              <span
+                className="glitch-wrap title-white"
+                data-text="AI VERSE"
+                aria-label="AI VERSE"
+              >
+                AI VERSE
+              </span>
             </h1>
+
             <h1 className="hero-h1-line2">
-              <span className="glitch-wrap title-gold" data-text="3.0" aria-label="3.0">3.0</span>
+              <span
+                className="glitch-wrap title-gold"
+                data-text="3.0"
+                aria-label="3.0"
+              >
+                3.0
+              </span>
             </h1>
           </motion.div>
 
-          <motion.p className="hero-sub" variants={fadeUp} custom={3} initial="hidden" animate="visible">
+          <motion.p
+            className="hero-sub"
+            variants={fadeUp}
+            custom={3}
+            initial="hidden"
+            animate="visible"
+          >
             Ideas to Impact &nbsp;&middot;&nbsp; Code to Creation
           </motion.p>
 
-          <motion.div className="hero-cta" variants={fadeUp} custom={3.6} initial="hidden" animate="visible">
+          <motion.div
+            className="hero-cta"
+            variants={fadeUp}
+            custom={3.6}
+            initial="hidden"
+            animate="visible"
+          >
             <Link to="/register" className="btn-primary">
               <span className="btn-inner">Register Now</span>
               <span className="btn-shine" aria-hidden="true" />
             </Link>
-            <a href="#about" className="btn-outline">About Augment AI</a>
+
+            <a href="#about" className="btn-outline">
+              About Augment AI
+            </a>
           </motion.div>
 
           <Countdown />
         </div>
 
-        {/* Right image panel */}
-        <div className="hero-image-panel">
-          <img src={heroImg} alt="AI Verse hackathon" />
+        {/* RIGHT IMAGE PANEL */}
+        <div
+          className={`hero-image-panel${
+            heroImageFailed ? ' hero-image-failed' : ''
+          }`}
+        >
+          {!heroImageFailed ? (
+            <img
+              src={heroImg}
+              alt="AI Verse hackathon"
+              onError={() => setHeroImageFailed(true)}
+            />
+          ) : (
+            <div
+              className="image-fallback image-fallback--hero"
+              role="img"
+              aria-label="AI VERSE 3.0 event image unavailable"
+            >
+              <span className="image-fallback-title">
+                AI VERSE <strong>3.0</strong>
+              </span>
+
+              <span className="image-fallback-subtitle">
+                Ideas to Impact · Code to Creation
+              </span>
+            </div>
+          )}
+
           <div className="hero-image-corner tl" />
           <div className="hero-image-corner tr" />
           <div className="hero-image-corner bl" />
           <div className="hero-image-corner br" />
-          {/* Floating stats overlay */}
+
           <motion.div
             className="hero-stat-badge"
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 1.2, duration: 0.7, ease: [0.22,1,0.36,1] }}
+            transition={{
+              delay: 1.2,
+              duration: 0.7,
+              ease: [0.22, 1, 0.36, 1],
+            }}
           >
             <span className="hsb-value">₹50K</span>
             <span className="hsb-label">Prize Pool</span>
           </motion.div>
+
           <motion.div
             className="hero-stat-badge hero-stat-badge--b"
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 1.5, duration: 0.7, ease: [0.22,1,0.36,1] }}
+            transition={{
+              delay: 1.5,
+              duration: 0.7,
+              ease: [0.22, 1, 0.36, 1],
+            }}
           >
             <span className="hsb-value">48H</span>
             <span className="hsb-label">Non-Stop</span>
@@ -183,7 +453,10 @@ export default function Home() {
       <div className="marquee-strip" aria-hidden="true">
         <div className="marquee-track">
           {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (
-            <span key={i}>{item}<span className="sep">&nbsp;&#9670;&nbsp;</span></span>
+            <span key={i}>
+              {item}
+              <span className="sep">&nbsp;&#9670;&nbsp;</span>
+            </span>
           ))}
         </div>
       </div>
@@ -205,7 +478,11 @@ export default function Home() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            whileHover={{ scale: 1.06 }}
+            whileHover={
+              shouldReduceMotion
+                ? undefined
+                : { scale: 1.06 }
+            }
           >
             <span className="stats-bar-val">{v}</span>
             <span className="stats-bar-label">{l}</span>
@@ -215,38 +492,125 @@ export default function Home() {
 
       {/* ABOUT */}
       <section className="about section" id="about">
-        <motion.span className="section-label" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+        <motion.span
+          className="section-label"
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
           Who We Are
         </motion.span>
-        <motion.h2 variants={fadeUp} custom={1} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+
+        <motion.h2
+          variants={fadeUp}
+          custom={1}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
           About Us
         </motion.h2>
-        <div className="gold-sep"><span /></div>
+
+        <div className="gold-sep">
+          <span />
+        </div>
+
         <div className="about-layout">
-          <motion.div className="about-image" variants={fadeUp} custom={1} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-            <motion.img
-              key={aboutImageIndex}
-              src={aboutImages[aboutImageIndex]}
-              alt={`Augment AI community ${aboutImageIndex + 1}`}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, ease: 'easeInOut' }}
-            />
+          <motion.div
+            className="about-image"
+            variants={fadeUp}
+            custom={1}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+            {aboutImages.length > 0 && (
+              failedAboutImages.includes(
+                aboutImages[aboutImageIndex]
+              ) ? (
+                <div
+                  className="image-fallback image-fallback--about"
+                  role="img"
+                  aria-label="Augment AI community photo unavailable"
+                >
+                  <span className="image-fallback-title">
+                    AUGMENT <strong>AI</strong>
+                  </span>
+
+                  <span className="image-fallback-subtitle">
+                    Learning · Collaboration · Innovation
+                  </span>
+                </div>
+              ) : (
+                <motion.img
+                  key={aboutImages[aboutImageIndex]}
+                  src={aboutImages[aboutImageIndex]}
+                  alt={`Augment AI community ${aboutImageIndex + 1}`}
+                  onError={() => {
+                    const failedImage = aboutImages[aboutImageIndex];
+
+                    setFailedAboutImages((previous) =>
+                      previous.includes(failedImage)
+                        ? previous
+                        : [...previous, failedImage]
+                    );
+                  }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{
+                    duration: shouldReduceMotion ? 0 : 0.8,
+                    ease: 'easeInOut',
+                  }}
+                />
+              )
+            )}
+
             <div className="about-image-dots">
               {aboutImages.map((_, i) => (
                 <button
                   key={i}
-                  className={`about-dot${i === aboutImageIndex ? ' about-dot--active' : ''}`}
+                  type="button"
+                  className={`about-dot${
+                    i === aboutImageIndex ? ' about-dot--active' : ''
+                  }`}
                   onClick={() => setAboutImageIndex(i)}
-                  aria-label={`Photo ${i + 1}`}
+                  aria-label={`Show community photo ${i + 1}`}
+                  aria-current={
+                    i === aboutImageIndex ? 'true' : undefined
+                  }
                 />
               ))}
             </div>
           </motion.div>
-          <motion.div className="about-copy" variants={fadeUp} custom={2} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-            <h3><em>Augment</em> AI</h3>
-            <p>Augment AI, an initiative by the Information Science Department at BMS College of Engineering, is a thriving community dedicated to Artificial Intelligence. Our vision is to bring together like‑minded individuals who are passionate about AI, fostering learning, collaboration, and innovation.</p>
-            <p>Through workshops, projects, and events, we equip students with hands-on experience in AI and its real-world applications. This hackathon challenges participants to build AI-driven solutions that enhance existing services and push the boundaries of what AI can achieve.</p>
+
+          <motion.div
+            className="about-copy"
+            variants={fadeUp}
+            custom={2}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+            <h3>
+              <em>Augment</em> AI
+            </h3>
+
+            <p>
+              Augment AI, an initiative by the Information Science Department
+              at BMS College of Engineering, is a thriving community dedicated
+              to Artificial Intelligence. Our vision is to bring together
+              like-minded individuals who are passionate about AI, fostering
+              learning, collaboration, and innovation.
+            </p>
+
+            <p>
+              Through workshops, projects, and events, we equip students
+              with hands-on experience in AI and its real-world applications.
+              This hackathon challenges participants to build AI-driven
+              solutions that enhance existing services and push the
+              boundaries of what AI can achieve.
+            </p>
           </motion.div>
         </div>
       </section>
@@ -257,22 +621,57 @@ export default function Home() {
 
       {/* TEAM */}
       <section className="team-section section" id="team">
-        <motion.span className="section-label" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+        <motion.span
+          className="section-label"
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
           The People Behind It
         </motion.span>
-        <motion.h2 variants={fadeUp} custom={1} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+
+        <motion.h2
+          variants={fadeUp}
+          custom={1}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
           Team Augment
         </motion.h2>
-        <div className="gold-sep"><span /></div>
+
+        <div className="gold-sep">
+          <span />
+        </div>
+
         <div className="cards-row">
           {team.map(([name, role], i) => (
             <motion.div
-              key={name} className="card"
-              variants={fadeUp} custom={i}
-              initial="hidden" whileInView="visible" viewport={{ once: true }}
-              whileHover={{ y: -8, transition: { duration: 0.2 } }}
+              key={name}
+              className="card"
+              variants={fadeUp}
+              custom={i}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              whileHover={
+                shouldReduceMotion
+                  ? undefined
+                  : {
+                      y: -8,
+                      transition: { duration: 0.2 },
+                    }
+              }
             >
-              <span className="card-icon" aria-hidden="true">{name.split(' ').map((p) => p[0]).join('').slice(0,2)}</span>
+              <span className="card-icon" aria-hidden="true">
+                {name
+                  .split(' ')
+                  .map((part) => part[0])
+                  .join('')
+                  .slice(0, 2)}
+              </span>
+
               <h3>{name}</h3>
               <p>{role}</p>
             </motion.div>
@@ -280,60 +679,200 @@ export default function Home() {
         </div>
       </section>
 
-      {/* FAQ — accordion */}
+      {/* FAQ */}
       <section className="faq section" id="faq">
-        <motion.span className="section-label" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+        <motion.span
+          className="section-label"
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
           Got Questions?
         </motion.span>
-        <motion.h2 variants={fadeUp} custom={1} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+
+        <motion.h2
+          variants={fadeUp}
+          custom={1}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
           FAQ
         </motion.h2>
-        <div className="gold-sep"><span /></div>
+
+        <div className="gold-sep">
+          <span />
+        </div>
+
         <br />
-        {faqs.map(([question, answer], i) => (
-          <motion.div
-            key={question}
-            className={`faq-item${openFaq === i ? ' faq-open' : ''}`}
-            variants={fadeUp} custom={i}
-            initial="hidden" whileInView="visible" viewport={{ once: true }}
-            onClick={() => setOpenFaq(openFaq === i ? null : i)}
-          >
-            <div className="faq-q">
-              <h4>{question}</h4>
-              <span className="faq-icon" aria-hidden="true">{openFaq === i ? '−' : '+'}</span>
-            </div>
+
+        {faqs.map(([question, answer], i) => {
+          const isOpen = openFaq === i;
+          const questionId = `faq-question-${i}`;
+          const answerId = `faq-answer-${i}`;
+
+          return (
             <motion.div
-              className="faq-a"
-              initial={false}
-              animate={{ height: openFaq === i ? 'auto' : 0, opacity: openFaq === i ? 1 : 0 }}
-              transition={{ duration: 0.3, ease: 'easeInOut' }}
-              style={{ overflow: 'hidden' }}
+              key={question}
+              className={`faq-item${isOpen ? ' faq-open' : ''}`}
+              variants={fadeUp}
+              custom={i}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
             >
-              <p>{answer}</p>
+              <button
+                id={questionId}
+                type="button"
+                className="faq-q"
+                aria-expanded={isOpen}
+                aria-controls={answerId}
+                onClick={() => setOpenFaq(isOpen ? null : i)}
+              >
+                <span className="faq-question">{question}</span>
+
+                <span className="faq-icon" aria-hidden="true">
+                  {isOpen ? '−' : '+'}
+                </span>
+              </button>
+
+              <motion.div
+                id={answerId}
+                className="faq-a"
+                role="region"
+                aria-labelledby={questionId}
+                aria-hidden={!isOpen}
+                inert={!isOpen}
+                initial={false}
+                animate={{
+                  height: isOpen ? 'auto' : 0,
+                  opacity: isOpen ? 1 : 0,
+                }}
+                transition={{
+                  duration: shouldReduceMotion ? 0 : 0.3,
+                  ease: 'easeInOut',
+                }}
+                style={{ overflow: 'hidden' }}
+              >
+                <p>{answer}</p>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        ))}
+          );
+        })}
       </section>
 
       {/* FOOTER */}
-      <footer className="footer" id="contact">
-        <div className="footer-column">
-          <h3>AI-VERSE 3.0</h3>
-          <p>48-Hour Online Hackathon.</p>
-          <p>Presented by Augment AI</p>
-          <p className="footer-copyright">&copy; 2026 Tech Team &mdash; Augment AI</p>
+      <footer className="av-footer" id="contact">
+        <div className="av-footer-inner">
+          <div className="av-footer-brand">
+            <a
+              href="#home"
+              className="av-footer-logo"
+              onClick={(event) => {
+                event.preventDefault();
+                window.scrollTo({
+                  top: 0,
+                  behavior: shouldReduceMotion ? 'auto' : 'smooth',
+                });
+              }}
+            >
+              AI <span>VERSE</span> <small>3.0</small>
+            </a>
+            <p>48-Hour Online Hackathon</p>
+            <p>Presented by Augment AI</p>
+
+            <div className="av-footer-socials" aria-label="Social media">
+              <a
+                href="https://instagram.com/bmsce_augment.ai"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Augment AI on Instagram"
+                title="Instagram"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5" />
+                  <circle cx="12" cy="12" r="4" />
+                  <circle className="av-icon-fill" cx="17.7" cy="6.5" r="1" />
+                </svg>
+              </a>
+              <a
+                href="https://www.linkedin.com/company/bmsce-augment-ai/"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Augment AI on LinkedIn"
+                title="LinkedIn"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M5 9v10M5 5.5v.1M10 19v-6.1c0-2 1.1-3.2 2.9-3.2s2.9 1.2 2.9 3.2V19M10 10v9M3.5 9h3M8.5 19h3" />
+                  <circle cx="5" cy="5.5" r="1.5" />
+                </svg>
+              </a>
+            </div>
+          </div>
+
+          <nav className="av-footer-links" aria-label="Footer navigation">
+            <h3>Explore</h3>
+            <a href="#about"><span>About</span><span className="av-footer-link-arrow">↗</span></a>
+            <a href="#problem-statements"><span>Problem Statements</span><span className="av-footer-link-arrow">↗</span></a>
+            <a href="#timeline"><span>Timeline</span><span className="av-footer-link-arrow">↗</span></a>
+            <a href="#judges"><span>Judges</span><span className="av-footer-link-arrow">↗</span></a>
+            <a href="#faq"><span>FAQs</span><span className="av-footer-link-arrow">↗</span></a>
+            <Link to="/register"><span>Register</span><span className="av-footer-link-arrow">↗</span></Link>
+          </nav>
+
+          <address className="av-footer-contact">
+            <h3>Contact</h3>
+            <div className="av-footer-contact-row">
+              <span className="av-footer-contact-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z" />
+                  <circle cx="12" cy="10" r="2.5" />
+                </svg>
+              </span>
+              <p>BMS College of Engineering,<br />Bangalore</p>
+            </div>
+            <a className="av-footer-contact-row" href="mailto:augment_ai@bmsce.ac.in">
+              <span className="av-footer-contact-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <rect x="3" y="5" width="18" height="14" rx="2" />
+                  <path d="m4 7 8 6 8-6" />
+                </svg>
+              </span>
+              <span>augment_ai@bmsce.ac.in</span>
+              <span className="av-footer-contact-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a className="av-footer-contact-row" href="tel:+919472818251">
+              <span className="av-footer-contact-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M7 3h3l1.5 4-2 1.5a15 15 0 0 0 6 6l1.5-2 4 1.5v3c0 1.1-.9 2-2 2C10.7 19 5 13.3 5 6c0-1.7.7-3 2-3Z" />
+                </svg>
+              </span>
+              <span>+91 94728 18251</span>
+              <span className="av-footer-contact-arrow" aria-hidden="true">↗</span>
+            </a>
+          </address>
         </div>
-        <div className="footer-column">
-          <h3>Social</h3>
-          <p>Instagram: <a href="https://instagram.com/bmsce_augment.ai" target="_blank" rel="noreferrer">bmsce_augment.ai</a></p>
-          <p>LinkedIn: <a href="https://www.linkedin.com/company/bmsce-augment-ai/" target="_blank" rel="noreferrer">bmsce-augment-ai</a></p>
+
+        <div className="av-footer-bottom">
+          <span>© 2026 Tech Team — Augment AI</span>
+          <button
+            type="button"
+            onClick={() =>
+              window.scrollTo({
+                top: 0,
+                behavior: shouldReduceMotion ? 'auto' : 'smooth',
+              })
+            }
+          >
+            Back to top
+            <span className="av-footer-top-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 19V5M6 11l6-6 6 6" />
+              </svg>
+            </span>
+          </button>
         </div>
-        <address className="footer-column">
-          <h3>Contact</h3>
-          <p>BMS College Of Engineering, Bangalore</p>
-          <p>Email: <a href="mailto:augment_ai@bmsce.ac.in">augment_ai@bmsce.ac.in</a></p>
-          <p>Phone: <a href="tel:+919472818251">+91 94728 18251</a></p>
-        </address>
       </footer>
     </div>
   );

@@ -167,3 +167,120 @@ body::after {
     transition-duration: 0.01ms !important;
   }
 }
+
+
+/* ============================================================
+   MOBILE PERFORMANCE OPTIMIZATION
+   ============================================================ */
+
+@media (max-width: 768px) {
+  /* Keep the cinematic texture, but stop constantly repainting it. */
+  body::after {
+    animation: none;
+    opacity: 0.018;
+  }
+
+  body::before {
+    opacity: 0.5;
+  }
+
+  /* Reduce unnecessary visual effects on smaller devices. */
+  .gold-sep span {
+    box-shadow: 0 0 5px var(--gold-glow);
+  }
+
+  .section {
+    scroll-margin-top: 75px;
+  }
+
+  /* Avoid expensive blur effects on mobile. */
+  .stats-bar {
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+  }
+}
+
+/* Smaller phones */
+@media (max-width: 480px) {
+  body::after {
+    display: none;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Respect accessibility settings. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  body::after {
+    animation: none !important;
+  }
+}
+
+
+/* =========================================
+   SMART TEXT SELECTION
+   ========================================= */
+
+/* Disable accidental selection by default */
+*,
+*::before,
+*::after {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Allow selection of meaningful content */
+p,
+h1, h2, h3, h4, h5, h6,
+li,
+blockquote,
+article,
+main,
+section p,
+.section > p,
+.about-copy,
+.hero-sub,
+.timeline-card,
+.problem-card,
+.judge-card,
+.faq-a,
+.footer-column p,
+.register-details,
+input,
+textarea,
+[contenteditable="true"] {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* Keep interactive controls non-selectable */
+button,
+a,
+nav,
+[role="button"],
+[role="tab"] {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Prevent dragging decorative media */
+img,
+svg,
+canvas,
+video {
+  -webkit-user-drag: none;
+  user-drag: none;
+}
+
+/* Selection appearance */
+::selection {
+  background: rgba(212, 175, 99, 0.35);
+  color: #ffffff;
+}
