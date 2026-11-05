@@ -275,7 +275,7 @@ export default function Home() {
           onClick={handleLogoClick}
           aria-label="AI Verse 3.0 - Back to top"
         >
-          AGENT<span className="accent">VERSE 3.0</span>
+          AI <span className="accent">VERSE 3.0</span>
         </a>
 
         <button
@@ -441,7 +441,7 @@ export default function Home() {
           {!heroImageFailed ? (
             <img
               src={heroImg}
-              alt="AI VERSE hackathon"
+              alt="AI VERSE 3.0 hackathon"
               onError={() => setHeroImageFailed(true)}
             />
           ) : (
