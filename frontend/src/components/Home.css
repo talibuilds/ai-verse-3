@@ -1541,3 +1541,307 @@
     padding: 1.5rem 5vw 2rem !important;
   }
 }
+
+/* ============================================================
+   AI VERSE 3.0 — CLEAN FOOTER + REFINED LINKS & ICONS
+   ============================================================ */
+
+.av-footer {
+  background: #050d19;
+  border-top: 1px solid rgba(212, 175, 99, 0.28);
+  color: var(--silver-blue);
+}
+
+.av-footer-inner {
+  width: min(1240px, 86%);
+  margin: 0 auto;
+  padding: 58px 0 48px;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1.2fr;
+  gap: clamp(35px, 6vw, 90px);
+}
+
+.av-footer-logo {
+  display: inline-block;
+  margin-bottom: 17px;
+  color: var(--pure-white);
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 400;
+  letter-spacing: 0.09em;
+  text-decoration: none;
+}
+
+.av-footer-logo span {
+  color: var(--gold);
+}
+
+.av-footer-logo small {
+  margin-left: 3px;
+  color: var(--gold);
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  vertical-align: top;
+}
+
+.av-footer-brand p,
+.av-footer-contact p {
+  margin: 0 0 9px;
+  color: var(--silver-blue);
+  font-size: 0.86rem;
+  line-height: 1.7;
+}
+
+/* Social icon links */
+.av-footer-socials {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 23px;
+}
+
+.av-footer-socials a {
+  width: 36px;
+  height: 36px;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid rgba(212, 175, 99, 0.28);
+  border-radius: 50%;
+  color: var(--silver-blue);
+  transition: color 0.22s ease, border-color 0.22s ease,
+    background 0.22s ease, transform 0.22s ease;
+}
+
+.av-footer-socials svg,
+.av-footer-contact-icon svg,
+.av-footer-top-icon svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.av-footer-socials .av-icon-fill {
+  fill: currentColor;
+  stroke: none;
+}
+
+.av-footer-socials a:hover {
+  color: var(--gold);
+  border-color: var(--gold);
+  background: rgba(212, 175, 99, 0.08);
+  transform: translateY(-3px);
+}
+
+.av-footer a {
+  color: var(--silver-blue);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.av-footer a:hover {
+  color: var(--gold);
+}
+
+.av-footer-links,
+.av-footer-contact {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-style: normal;
+}
+
+.av-footer-links h3,
+.av-footer-contact h3 {
+  margin: 5px 0 19px;
+  color: var(--pure-white);
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Navigation links with a restrained arrow reveal */
+.av-footer-links a {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 11px;
+  font-size: 0.84rem;
+  line-height: 1.6;
+}
+
+.av-footer-link-arrow {
+  color: var(--gold);
+  opacity: 0;
+  transform: translate(-4px, 4px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.av-footer-links a:hover {
+  color: var(--gold);
+}
+
+.av-footer-links a:hover .av-footer-link-arrow {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+/* Contact rows */
+.av-footer-contact-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-bottom: 13px;
+  color: var(--silver-blue);
+  font-size: 0.84rem;
+  line-height: 1.6;
+  text-decoration: none;
+}
+
+.av-footer-contact-row p {
+  margin: 0;
+}
+
+.av-footer-contact-icon {
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(212, 175, 99, 0.22);
+  border-radius: 50%;
+  color: var(--gold);
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.av-footer-contact-icon svg {
+  width: 15px;
+  height: 15px;
+}
+
+.av-footer-contact-row:hover .av-footer-contact-icon {
+  background: rgba(212, 175, 99, 0.09);
+  border-color: var(--gold);
+}
+
+.av-footer-contact-arrow {
+  margin-left: auto;
+  color: var(--gold);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.av-footer-contact-row:hover .av-footer-contact-arrow {
+  opacity: 1;
+}
+
+.av-footer-bottom {
+  min-height: 64px;
+  width: min(1240px, 86%);
+  margin: 0 auto;
+  border-top: 1px solid rgba(169, 184, 202, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  color: rgba(169, 184, 202, 0.62);
+  font-size: 0.76rem;
+}
+
+.av-footer-bottom button {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 0;
+  border: 0;
+  background: transparent;
+  color: var(--silver-blue);
+  font: inherit;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.av-footer-top-icon {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(212, 175, 99, 0.3);
+  border-radius: 50%;
+  color: var(--gold);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.av-footer-top-icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+.av-footer-bottom button:hover {
+  color: var(--gold);
+}
+
+.av-footer-bottom button:hover .av-footer-top-icon {
+  background: rgba(212, 175, 99, 0.1);
+  transform: translateY(-2px);
+}
+
+.av-footer a:focus-visible,
+.av-footer button:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 4px;
+}
+
+@media (max-width: 760px) {
+  .av-footer-inner {
+    width: 88%;
+    padding: 45px 0 35px;
+    grid-template-columns: 1fr 1fr;
+    gap: 35px 28px;
+  }
+
+  .av-footer-brand {
+    grid-column: 1 / -1;
+  }
+
+  .av-footer-bottom {
+    width: 88%;
+  }
+}
+
+@media (max-width: 480px) {
+  .av-footer-inner {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .av-footer-brand {
+    grid-column: auto;
+  }
+
+  .av-footer-bottom {
+    min-height: 70px;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: column;
+    gap: 8px;
+    padding: 15px 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .av-footer *,
+  .av-footer *::before,
+  .av-footer *::after {
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}

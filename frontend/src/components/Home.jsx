@@ -763,60 +763,116 @@ export default function Home() {
       </section>
 
       {/* FOOTER */}
-      <footer className="footer" id="contact">
-        <div className="footer-column">
-          <h3>AI-VERSE 3.0</h3>
-          <p>48-Hour Online Hackathon.</p>
-          <p>Presented by Augment AI</p>
-          <p className="footer-copyright">
-            &copy; 2026 Tech Team &mdash; Augment AI
-          </p>
+      <footer className="av-footer" id="contact">
+        <div className="av-footer-inner">
+          <div className="av-footer-brand">
+            <a
+              href="#home"
+              className="av-footer-logo"
+              onClick={(event) => {
+                event.preventDefault();
+                window.scrollTo({
+                  top: 0,
+                  behavior: shouldReduceMotion ? 'auto' : 'smooth',
+                });
+              }}
+            >
+              AI <span>VERSE</span> <small>3.0</small>
+            </a>
+            <p>48-Hour Online Hackathon</p>
+            <p>Presented by Augment AI</p>
+
+            <div className="av-footer-socials" aria-label="Social media">
+              <a
+                href="https://instagram.com/bmsce_augment.ai"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Augment AI on Instagram"
+                title="Instagram"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5" />
+                  <circle cx="12" cy="12" r="4" />
+                  <circle className="av-icon-fill" cx="17.7" cy="6.5" r="1" />
+                </svg>
+              </a>
+              <a
+                href="https://www.linkedin.com/company/bmsce-augment-ai/"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Augment AI on LinkedIn"
+                title="LinkedIn"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M5 9v10M5 5.5v.1M10 19v-6.1c0-2 1.1-3.2 2.9-3.2s2.9 1.2 2.9 3.2V19M10 10v9M3.5 9h3M8.5 19h3" />
+                  <circle cx="5" cy="5.5" r="1.5" />
+                </svg>
+              </a>
+            </div>
+          </div>
+
+          <nav className="av-footer-links" aria-label="Footer navigation">
+            <h3>Explore</h3>
+            <a href="#about"><span>About</span><span className="av-footer-link-arrow">↗</span></a>
+            <a href="#problem-statements"><span>Problem Statements</span><span className="av-footer-link-arrow">↗</span></a>
+            <a href="#timeline"><span>Timeline</span><span className="av-footer-link-arrow">↗</span></a>
+            <a href="#judges"><span>Judges</span><span className="av-footer-link-arrow">↗</span></a>
+            <a href="#faq"><span>FAQs</span><span className="av-footer-link-arrow">↗</span></a>
+            <Link to="/register"><span>Register</span><span className="av-footer-link-arrow">↗</span></Link>
+          </nav>
+
+          <address className="av-footer-contact">
+            <h3>Contact</h3>
+            <div className="av-footer-contact-row">
+              <span className="av-footer-contact-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z" />
+                  <circle cx="12" cy="10" r="2.5" />
+                </svg>
+              </span>
+              <p>BMS College of Engineering,<br />Bangalore</p>
+            </div>
+            <a className="av-footer-contact-row" href="mailto:augment_ai@bmsce.ac.in">
+              <span className="av-footer-contact-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <rect x="3" y="5" width="18" height="14" rx="2" />
+                  <path d="m4 7 8 6 8-6" />
+                </svg>
+              </span>
+              <span>augment_ai@bmsce.ac.in</span>
+              <span className="av-footer-contact-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a className="av-footer-contact-row" href="tel:+919472818251">
+              <span className="av-footer-contact-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M7 3h3l1.5 4-2 1.5a15 15 0 0 0 6 6l1.5-2 4 1.5v3c0 1.1-.9 2-2 2C10.7 19 5 13.3 5 6c0-1.7.7-3 2-3Z" />
+                </svg>
+              </span>
+              <span>+91 94728 18251</span>
+              <span className="av-footer-contact-arrow" aria-hidden="true">↗</span>
+            </a>
+          </address>
         </div>
 
-        <div className="footer-column">
-          <h3>Social</h3>
-
-          <p>
-            Instagram:{' '}
-            <a
-              href="https://instagram.com/bmsce_augment.ai"
-              target="_blank"
-              rel="noreferrer"
-            >
-              bmsce_augment.ai
-            </a>
-          </p>
-
-          <p>
-            LinkedIn:{' '}
-            <a
-              href="https://www.linkedin.com/company/bmsce-augment-ai/"
-              target="_blank"
-              rel="noreferrer"
-            >
-              bmsce-augment-ai
-            </a>
-          </p>
+        <div className="av-footer-bottom">
+          <span>© 2026 Tech Team — Augment AI</span>
+          <button
+            type="button"
+            onClick={() =>
+              window.scrollTo({
+                top: 0,
+                behavior: shouldReduceMotion ? 'auto' : 'smooth',
+              })
+            }
+          >
+            Back to top
+            <span className="av-footer-top-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 19V5M6 11l6-6 6 6" />
+              </svg>
+            </span>
+          </button>
         </div>
-
-        <address className="footer-column">
-          <h3>Contact</h3>
-          <p>BMS College Of Engineering, Bangalore</p>
-
-          <p>
-            Email:{' '}
-            <a href="mailto:augment_ai@bmsce.ac.in">
-              augment_ai@bmsce.ac.in
-            </a>
-          </p>
-
-          <p>
-            Phone:{' '}
-            <a href="tel:+919472818251">
-              +91 94728 18251
-            </a>
-          </p>
-        </address>
       </footer>
     </div>
   );
